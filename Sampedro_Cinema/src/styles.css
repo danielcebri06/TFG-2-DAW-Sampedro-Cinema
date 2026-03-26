@@ -1,0 +1,11 @@
+/* Importamos Bootstrap para la cuadrícula y utilidades */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Importamos un tema base de Angular Material (necesario para el funcionamiento) */
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+/* Aseguramos fondo general blanco puro */
+body {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
