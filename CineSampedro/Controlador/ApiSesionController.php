@@ -117,7 +117,7 @@ class ApiSesionController {
                 'filas_afectadas' => $filas
             ], 201);
             
-        } catch (Exception $ex) {
+        } catch (PDOException $ex) {
             $this->enviarRespuesta( [
                 'mensaje' => 'Error al crear la sesión',
                 'erro' => $ex->getMessage()
