@@ -55,7 +55,7 @@ class ApiPeliculaController{
             }
             
             $this->enviarRespuesta($peliculas);
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             $this->enviarRespuesta([
                 'mensaje' => 'Error al recuperar las películas',
                 'error' => $e->getMessage()
@@ -81,7 +81,7 @@ class ApiPeliculaController{
                 'imagen' => $pelicula->getImagen(),
                 'id_clasificacion' => $pelicula->getId_clasificacion()
             ]);
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             $this->enviarRespuesta([
                 'mensaje' => 'Error al recuperar las películas',
                 'error' => $e->getMessage()
@@ -117,7 +117,7 @@ class ApiPeliculaController{
                 'filas_afectadas' => $filas
             ], 201);
             
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             $this->enviarRespuesta([
                 'mensaje' => 'Error al crear la película',
                 'error' => $e->getMessage()
