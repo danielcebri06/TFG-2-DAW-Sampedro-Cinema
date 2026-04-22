@@ -1,116 +1,15 @@
 <nav class="navbar navbar-expand-lg bg-white border-bottom border-dark py-3">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-dark m-0 fs-3" href="#">
-      SAMPEDRO CINEMA
-    </a>
+  <div class="container-fluid px-4">
+    <a class="navbar-brand fw-bold text-dark fs-4" routerLink="/">SAMPEDRO CINEMA</a>
     <div class="collapse navbar-collapse justify-content-center">
       <ul class="navbar-nav fw-bold">
-        <li class="nav-item"><a class="nav-link text-dark" href="#">Cartelera</a></li>
+        <li class="nav-item"><a class="nav-link text-dark text-decoration-underline" routerLink="/">Cartelera</a></li>
         <li class="nav-item"><a class="nav-link text-dark" href="#">Mis Entradas</a></li>
-        <li class="nav-item"><a class="nav-link text-dark" href="#">Promociones</a></li>
-        <li class="nav-item">
-          <a class="nav-link AdminBtn text-dark px-3 rounded ms-3 border border-dark bg-white" href="#">Admin</a>
-        </li>
+        <li class="nav-item"><a class="nav-link text-dark" href="#">Admin</a></li>
       </ul>
     </div>
-    <button mat-stroked-button color="warn" class="fw-bold fs-6">Iniciar Sesión / Registrarse</button>
+    <button class="btn btn-outline-dark bg-white rounded-0 fw-bold border-2">Iniciar Sesión</button>
   </div>
 </nav>
 
-<div class="container-fluid mt-4">
-  <div class="row">
-    
-    <div class="col-lg-6">
-      <mat-card class="mb-4 border border-dark rounded-0 shadow-sm bg-white">
-        <mat-card-content>
-          <div class="video-placeholder bg-white border border-dark d-flex align-items-center justify-content-center mb-3">
-            <h2 class="fw-bold text-dark m-0">HOY EN CARTELERA</h2>
-          </div>
-          <div class="d-flex gap-2">
-            <select class="form-select border-dark rounded-0 text-dark bg-white"><option>Selecciona ciudad</option></select>
-            <select class="form-select border-dark rounded-0 text-dark bg-white"><option>Selecciona fecha</option></select>
-            <select class="form-select border-dark rounded-0 text-dark bg-white"><option>Selecciona género</option></select>
-            <button mat-flat-button color="warn" class="rounded-0 px-4 fw-bold fs-6">BUSCAR</button>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <h4 class="fw-bold text-dark mb-3">CARTELERA DE CINES</h4>
-      <div class="row g-3">
-        <div class="col-md-3" *ngFor="let i of [1,2,3,4,5,6,7,8]">
-          <mat-card class="border border-dark rounded-0 shadow-sm h-100 text-center bg-white">
-            <div class="mini-placeholder bg-white border-bottom border-dark d-flex align-items-center justify-content-center">
-              <span class="text-danger fs-1">▶</span>
-            </div>
-            <mat-card-content class="p-2">
-              <h6 class="fw-bold mt-2 text-dark text-truncate">TÍTULO DE LA PELÍCULA</h6>
-              <p class="text-muted small mb-1">Género</p>
-              <div class="d-flex justify-content-center gap-1 mb-2">
-                <span class="badge border border-dark text-dark">+12</span>
-                <span class="badge border border-dark text-dark">120 min</span>
-                <span class="badge border border-dark text-dark">2D</span>
-              </div>
-              <button mat-flat-button color="warn" class="w-100 rounded-0 fs-6">VER DETALLES</button>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-6">
-      <mat-card class="mb-4 border border-dark rounded-0 shadow-sm bg-white">
-        <mat-card-content class="row">
-          <div class="col-md-5">
-            <div class="video-placeholder bg-white border border-dark d-flex align-items-center justify-content-center h-100 flex-column">
-               <span class="text-danger fs-1">▶</span>
-               <span class="text-dark fw-bold TRÁILER_Text">TRÁILER</span>
-            </div>
-          </div>
-          <div class="col-md-7">
-            <h5 class="fw-bold text-dark mb-1">DETALLES DE LA PELÍCULA</h5>
-            <h4 class="fw-bold text-dark">TÍTULO DE LA PELÍCULA</h4>
-            <p class="text-muted small mb-2">Género, Duración, Edad</p>
-            <p class="text-dark small mb-3 SynopsisText">Sinopsis de la película... Lorem ipsum dolor sit amet.</p>
-            
-            <select class="form-select border-dark rounded-0 mb-2 text-dark bg-white"><option>Fecha: [Selecciona]</option></select>
-            <select class="form-select border-dark rounded-0 mb-2 text-dark bg-white"><option>Horario: [Elige hora]</option></select>
-            <select class="form-select border-dark rounded-0 mb-3 text-dark bg-white"><option>Formato: [2D/ 3D/ VOSE]</option></select>
-            
-            <button mat-flat-button color="warn" class="w-100 rounded-0 fw-bold fs-6">BUSCAR SESIÓN</button>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="border border-dark rounded-0 shadow-sm bg-white">
-        <mat-card-content>
-          <h5 class="fw-bold text-dark border-bottom border-dark pb-2">SELECCIONA TUS ASIENTOS</h5>
-          
-          <div class="d-flex gap-3 my-3 small fw-bold text-dark LegendText">
-            <div><span class="seat-box border border-dark bg-white d-inline-block"></span> LIBRE</div>
-            <div><span class="seat-box border border-dark bg-secondary d-inline-block"></span> RESERVADO</div>
-            <div><span class="seat-box border border-dark bg-danger d-inline-block"></span> OCUPADO</div>
-          </div>
-
-          <div class="screen bg-dark w-75 mx-auto mb-4" style="height: 10px;"></div>
-
-          <div class="text-center mb-4">
-             <div class="d-flex justify-content-center gap-1 mb-1" *ngFor="let row of [1,2,3,4]">
-                <div class="seat-box border border-dark bg-white" *ngFor="let seat of [1,2,3,4,5,6,7,8,9,10,11,12]"></div>
-             </div>
-          </div>
-
-          <div class="d-flex justify-content-between align-items-center border-top border-dark pt-3">
-            <div>
-              <p class="mb-0 fw-bold text-dark SeatText">Asientos: <span class="text-danger">A5, A6, A7</span></p>
-              <p class="mb-0 text-muted small TimeText">Tiempo restante: 04:32</p>
-            </div>
-            <div class="d-flex gap-2 ActionButtonsContainer">
-              <button mat-stroked-button class="border-dark text-dark rounded-0 fw-bold ActionBtn CancelarBtn fs-6">CANCELAR</button>
-              <button mat-flat-button color="warn" class="rounded-0 fw-bold ActionBtn ConfirmarBtn fs-6">CONFIRMAR COMPRA</button>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>
-</div>
+<router-outlet></router-outlet>

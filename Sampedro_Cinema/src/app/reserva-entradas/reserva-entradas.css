@@ -1,0 +1,11 @@
+.seat-box {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  border: 1px solid #000;
+  transition: transform 0.1s;
+}
+.box-libre { background-color: #ffffff; }
+.box-libre:hover { transform: scale(1.1); background-color: #f0f0f0; }
+.box-ocupado { background-color: #666; cursor: not-allowed; opacity: 0.5; }
+.box-reservado { background-color: #cc0000; border-color: #990000; }

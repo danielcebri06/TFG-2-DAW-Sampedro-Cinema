@@ -1,11 +1,28 @@
-/* Importamos Bootstrap para la cuadrícula y utilidades */
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
-/* Importamos un tema base de Angular Material (necesario para el funcionamiento) */
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+:root {
+  --wireframe-grey: #c0c0c0;
+  --cinema-red: #cc0000;
+  --black: #000000;
+  --white: #ffffff;
+}
 
-/* Aseguramos fondo general blanco puro */
 body {
-  background-color: #ffffff !important;
-  color: #000000 !important;
+  font-family: Arial, sans-serif;
+  background-color: var(--white);
+  color: var(--black);
+}
+
+/* Estilos comunes de botones y cajas */
+.btn-red {
+  background-color: var(--cinema-red) !important;
+  color: var(--white) !important;
+  border: none;
+  border-radius: 0;
+}
+.btn-red:hover { background-color: #aa0000 !important; }
+.wireframe-frame {
+  border: 1px solid var(--wireframe-grey);
+  border-radius: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }

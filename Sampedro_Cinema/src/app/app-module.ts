@@ -1,23 +1,20 @@
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 
-/* Importes de Angular Material */
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import { CarteleraComponent } from './cartelera/cartelera';
+import { ReservaEntradasComponent } from './reserva-entradas/reserva-entradas';
 
 @NgModule({
   declarations: [
-    App
+    App,
+    CarteleraComponent,
+    ReservaEntradasComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    /* Declaramos los módulos de Material */
-    MatButtonModule,
-    MatCardModule
+    AppRoutingModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
