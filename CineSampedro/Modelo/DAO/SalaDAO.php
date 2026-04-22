@@ -74,10 +74,12 @@ class SalaDAO {
         );
     }
     
-    public function recuperarTodos (int $id_sala): array {
+    public function recuperarTodos (): array {
+        $salas = [];
+        
         $sql ="SELECT * FROM salas ORDER BY numero";
         
-        $resultado = $this->bd->prepare(sql);
+        $resultado = $this->bd->prepare($sql);
         $resultado->execute();
         
         foreach ($resultado->fetchAll(PDO::FETCH_ASSOC) as $fila) {
