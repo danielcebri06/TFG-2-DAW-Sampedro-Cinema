@@ -12,7 +12,7 @@ $id_sesion = filter_input(INPUT_GET, 'id_sesion', FILTER_VALIDATE_INT);
 
 switch ($metodo){
     case 'GET':
-        if (!$id_sesion){
+        if ($id_sesion !== null && $id_sesion !== false){
             $controlador->obtener($id_sesion);
         } else {
             $controlador->listar();
@@ -24,7 +24,7 @@ switch ($metodo){
         break;
     
     case 'PUT':
-        if(!$id_sesion){
+        if($id_sesion !== null && $id_sesion !== false){
             $controlador->modificar($id_sesion);
         } else {
             http_response_code(400);
@@ -38,7 +38,7 @@ switch ($metodo){
         break;
         
     case 'DELETE':
-        if (!$id_sesion) {
+        if ($id_sesion !== null && $id_sesion !== false) {
             $controlador->eliminar($id_sesion);            
         } else {
             http_response_code(400);
