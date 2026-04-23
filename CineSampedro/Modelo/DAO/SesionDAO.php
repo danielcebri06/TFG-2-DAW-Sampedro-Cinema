@@ -1,17 +1,28 @@
 <?php
-
 namespace App\Modelo\DAO;
 
 use PDO;
 use App\Modelo\Entidades\Sesion;
-use App\Modelo\Conexion;
 
-
-class SesionDAO{
+class SesionDAO {
     private PDO $bd;
     
     public function __construct(PDO $bd) {
         $this->bd = $bd;
+    }
+    
+    public function recuperarPorPelicula(int $id_pelicula): array {
+        // Hacemos JOIN con salas para enviarle a Angular el número de sala
+        $sql = "SELECT s.*, sa.numero as numero_sala 
+                FROM sesiones s 
+                JOIN salas sa ON s.id_sala = sa.id 
+                WHERE s.id_pelicula = :id_pelicula 
+                ORDER BY s.fecha_hora";
+        
+        $resultado = $this->bd->prepare($sql);
+        $resultado->execute([':id_pelicula' => $id_pelicula]);
+        
+        return $resultado->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function crear(Sesion $sesion): int{
@@ -24,7 +35,7 @@ class SesionDAO{
             ':fecha_hora' => $sesion->getFecha_hora(),
             ':precio' => $sesion->getPrecio(),
             ':id_pelicula' => $sesion->getId_pelicula(),
-            ':id_sala' => $sesion->getId_sesion()
+            ':id_sala' => $sesion->getId_sala()
         ]);
         
         return $resultado->rowCount();
@@ -41,11 +52,11 @@ class SesionDAO{
         $resultado = $this->bd->prepare($sql);
 
         $resultado->execute([
-            ':fecha_hora' => $sesion->getFechaHora(),
+            ':fecha_hora' => $sesion->getFecha_hora(),
             ':precio' => $sesion->getPrecio(),
-            ':id_pelicula' => $sesion->getIdPelicula(),
-            ':id_sala' => $sesion->getIdSala(),
-            ':id_sesion' => $sesion->getIdSesion()
+            ':id_pelicula' => $sesion->getId_pelicula(),
+            ':id_sala' => $sesion->getId_sala(),
+            ':id_sesion' => $sesion->getId_sesion()
         ]);
 
         return $resultado->rowCount();
@@ -57,7 +68,7 @@ class SesionDAO{
         $resultado = $this->bd->prepare($sql);
         
         $resultado->execute([
-            'id_sesion' => $id_sesion
+            ':id_sesion' => $id_sesion
         ]);
         
         return $resultado->rowCount();

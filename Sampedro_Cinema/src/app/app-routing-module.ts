@@ -4,8 +4,8 @@ import { CarteleraComponent } from './cartelera/cartelera';
 import { ReservaEntradasComponent } from './reserva-entradas/reserva-entradas';
 
 const routes: Routes = [
-  { path: '', component: CarteleraComponent }, // Landing Page
-  { path: 'reservar/:id', component: ReservaEntradasComponent }, // Página de compra
+  { path: '', component: CarteleraComponent }, 
+  { path: 'reservar/:id', component: ReservaEntradasComponent },
   { path: '**', redirectTo: '' }
 ];
 

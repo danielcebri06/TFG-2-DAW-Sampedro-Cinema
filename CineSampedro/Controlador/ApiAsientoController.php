@@ -2,15 +2,15 @@
 namespace App\Controlador;
 
 use App\Modelo\Conexion\BD;
-use App\Modelo\DAO\SesionDAO;
+use App\Modelo\DAO\AsientoDAO;
 use PDOException;
 
-class ApiSesionController {
-    private SesionDAO $sesionDAO;
+class ApiAsientoController {
+    private AsientoDAO $asientoDAO;
     
     public function __construct() {
         $bd = BD::getConexion();
-        $this->sesionDAO = new SesionDAO($bd);
+        $this->asientoDAO = new AsientoDAO($bd);
     }
     
     private function enviarRespuesta(mixed $datos, int $codigo = 200): void {
@@ -25,23 +25,23 @@ class ApiSesionController {
         exit;
     }
 
-    public function obtenerPorPelicula(int $id_pelicula): void {
+    public function obtenerMapaAsientos(int $id_sala, int $id_sesion): void {
         try {
-            $sesiones = $this->sesionDAO->recuperarPorPelicula($id_pelicula);
+            $asientosDB = $this->asientoDAO->recuperarEstadoAsientosPorSesion($id_sala, $id_sesion);
             
-            // Formateamos las fechas y datos para que Angular los entienda fácil
-            $resultado = array_map(function($s) {
-                return [
-                    'id' => $s['id'],
-                    'fecha' => date('d/m/Y', strtotime($s['fecha_hora'])),
-                    'hora' => date('H:i', strtotime($s['fecha_hora'])),
-                    'formato' => 'Sala ' . $s['numero_sala'],
-                    'precio' => (float)$s['precio'],
-                    'id_sala' => $s['id_sala']
+            // Construimos el ID visual (ej: "A1", "C4") para Angular
+            $asientosFront = [];
+            foreach ($asientosDB as $a) {
+                $asientosFront[] = [
+                    'id' => $a['fila'] . $a['numero'],
+                    'id_real_db' => $a['id'],
+                    'fila' => $a['fila'],
+                    'numero' => $a['numero'],
+                    'estado' => $a['estado']
                 ];
-            }, $sesiones);
+            }
 
-            $this->enviarRespuesta($resultado);
+            $this->enviarRespuesta($asientosFront);
         } catch (PDOException $e) {
             $this->enviarRespuesta(['error' => $e->getMessage()], 500);
         }

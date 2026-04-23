@@ -7,42 +7,53 @@ use App\Modelo\DAO\PeliculaDAO;
 use App\Modelo\Entidades\Pelicula;
 use PDOException;
 
-class ApiPeliculaController{
+class ApiPeliculaController {
     private PeliculaDAO $peliculaDAO;
     
-    public function __construct(){
+    public function __construct() {
         $bd = BD::getConexion();
         $this->peliculaDAO = new PeliculaDAO($bd);
     }
     
-    private function enviarRespuesta(mixed $datos, int $codigo = 200): void{
-        http_response_code($codigo);
+    /**
+     * Envía una respuesta JSON y detiene la ejecución.
+     * Incluye cabeceras CORS para que Angular pueda conectarse.
+     */
+    private function enviarRespuesta(mixed $datos, int $codigo = 200): void {
+        header('Access-Control-Allow-Origin: *'); 
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
         header('Content-Type: application/json; charset=utf-8');
+        
+        // Manejo de peticiones preflight OPTIONS de los navegadores
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            http_response_code(200);
+            exit;
+        }
+
+        http_response_code($codigo);
         echo json_encode($datos, JSON_UNESCAPED_UNICODE);
+        exit; // Detiene la ejecución para evitar salida extra
     }
     
     private function obtenerDatosJson(): ?array {
         $json = file_get_contents("php://input");
         $datos = json_decode($json, true);
-        
         return is_array($datos) ? $datos : null;
     }
     
-    private function validarDatosPelicula(array $datos): bool{
-        return isset(
-                $datos['titulo'],
-                $datos['sinopsis'],
-                $datos['duracion_min'],
-                $datos['imagen'],
-                $datos['id_clasificacion']
-        );
+    private function validarDatosPelicula(array $datos): bool {
+        return !empty($datos['titulo']) &&
+               !empty($datos['sinopsis']) &&
+               isset($datos['duracion_min']) &&
+               !empty($datos['imagen']) &&
+               isset($datos['id_clasificacion']);
     }
     
     public function listar(): void {
-        try{
+        try {
             $peliculas = [];
-            
-            foreach ($this->peliculaDAO->recuperaTodos() as $pelicula){
+            foreach ($this->peliculaDAO->recuperaTodos() as $pelicula) {
                 $peliculas[] = [
                     'id_pelicula' => $pelicula->getId_pelicula(),
                     'titulo' => $pelicula->getTitulo(),
@@ -50,10 +61,8 @@ class ApiPeliculaController{
                     'duracion_min' => $pelicula->getDuracion_min(),
                     'imagen' => $pelicula->getImagen(),
                     'id_clasificacion' => $pelicula->getId_clasificacion()
-                    
                 ];
             }
-            
             $this->enviarRespuesta($peliculas);
         } catch (PDOException $e) {
             $this->enviarRespuesta([
@@ -63,14 +72,12 @@ class ApiPeliculaController{
         }
     }
     
-    public function obtener(int $id_pelicula): void{
-        try{
+    public function obtener(int $id_pelicula): void {
+        try {
             $pelicula = $this->peliculaDAO->recuperaPorId($id_pelicula);
             
-            if(!$pelicula){
-                $this->enviarRespuesta([
-                    'mensaje' => 'Película no encotrada'
-                ], 400);
+            if (!$pelicula) {
+                $this->enviarRespuesta(['mensaje' => 'Película no encontrada'], 404);
             }
             
             $this->enviarRespuesta([
@@ -83,35 +90,30 @@ class ApiPeliculaController{
             ]);
         } catch (PDOException $e) {
             $this->enviarRespuesta([
-                'mensaje' => 'Error al recuperar las películas',
+                'mensaje' => 'Error al recuperar la película',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
     
-    public function crear(): void{
-        try{
+    public function crear(): void {
+        try {
             $datos = $this->obtenerDatosJson();
             
-            if(!$datos || !$this->validarDatosPelicula($datos)){
-                $this->enviarRespuesta([
-                    'mensaje' => 'Datos de película incompletos o inválidos'
-                ], 400);
-                
-                return;
+            if (!$datos || !$this->validarDatosPelicula($datos)) {
+                $this->enviarRespuesta(['mensaje' => 'Datos de película incompletos o inválidos'], 400);
             }
             
             $pelicula = new Pelicula(
-                    null,
-                    $datos['titulo'],
-                    $datos['sinopsis'],
-                    (int) $datos['duracion_min'],
-                    $datos['imagen'],
-                    (int) $datos['id_clasificacion']
+                null,
+                $datos['titulo'],
+                $datos['sinopsis'],
+                (int) $datos['duracion_min'],
+                $datos['imagen'],
+                (int) $datos['id_clasificacion']
             );
             
             $filas = $this->peliculaDAO->crear($pelicula);
-            
             $this->enviarRespuesta([
                 'mensaje' => 'Película creada correctamente',
                 'filas_afectadas' => $filas
@@ -130,19 +132,13 @@ class ApiPeliculaController{
             $peliculaExistente = $this->peliculaDAO->recuperaPorId($id_pelicula);
 
             if (!$peliculaExistente) {
-                $this->enviarRespuesta([
-                    'mensaje' => 'Película no encontrada'
-                ], 404);
-                return;
+                $this->enviarRespuesta(['mensaje' => 'Película no encontrada'], 404);
             }
 
             $datos = $this->obtenerDatosJson();
 
             if (!$datos || !$this->validarDatosPelicula($datos)) {
-                $this->enviarRespuesta([
-                    'mensaje' => 'Datos de película incompletos o inválidos'
-                ], 400);
-                return;
+                $this->enviarRespuesta(['mensaje' => 'Datos de película incompletos o inválidos'], 400);
             }
 
             $pelicula = new Pelicula(
@@ -155,7 +151,6 @@ class ApiPeliculaController{
             );  
             
             $filas = $this->peliculaDAO->modificar($pelicula);
-
             $this->enviarRespuesta([
                 'mensaje' => 'Película modificada correctamente',
                 'filas_afectadas' => $filas
@@ -174,14 +169,10 @@ class ApiPeliculaController{
             $peliculaExistente = $this->peliculaDAO->recuperaPorId($id_pelicula);
 
             if (!$peliculaExistente) {
-                $this->enviarRespuesta([
-                    'mensaje' => 'Película no encontrada'
-                ], 404);
-                return;
+                $this->enviarRespuesta(['mensaje' => 'Película no encontrada'], 404);
             }
 
             $filas = $this->peliculaDAO->eliminar($id_pelicula);
-
             $this->enviarRespuesta([
                 'mensaje' => 'Película eliminada correctamente',
                 'filas_afectadas' => $filas

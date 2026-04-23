@@ -49,7 +49,7 @@ class PeliculaDAO {
             ':duracion_min' => $pelicula->getDuracion_min(),
             ':imagen' => $pelicula->getImagen(),
             ':id_clasificacion' => $pelicula->getId_clasificacion(),
-            ':id_pelicula' => $pelicula->getIdPelicula()
+            ':id_pelicula' => $pelicula->getId_pelicula()
         ]);
 
         return $resultado->rowCount();
@@ -66,37 +66,49 @@ class PeliculaDAO {
         return $resultado->rowCount();
     }
 
-    public function recuperaPorId(int $id_pelicula): ?Pelicula {
-        $this->bd->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
-
-        $sql = "SELECT * FROM peliculas WHERE id_pelicula = :id_pelicula";
-        $resultado = $this->bd->prepare($sql);
-        $resultado->execute([
-            ':id_pelicula' => $id_pelicula
-        ]);
-
-        $resultado->setFetchMode(PDO::FETCH_CLASS, Pelicula::class);
-        return $resultado->fetch() ?: null;
-    }
-
     public function recuperaTodos(): \Generator {
-        $this->bd->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+    $this->bd->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
 
-        try {
-            $this->bd->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+    try {
+        $this->bd->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 
-            $sql = "SELECT * FROM peliculas ORDER BY titulo";
-            $resultado = $this->bd->prepare($sql);
-            $resultado->execute();
+        $sql = "SELECT * FROM peliculas ORDER BY titulo";
+        $resultado = $this->bd->prepare($sql);
+        $resultado->execute();
 
-            $resultado->setFetchMode(PDO::FETCH_CLASS, Pelicula::class);
-
-            while ($pelicula = $resultado->fetch()) {
-                yield $pelicula;
-            }
-
-        } finally {
-            $this->bd->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+        while ($fila = $resultado->fetch(PDO::FETCH_ASSOC)) {
+            // USAMOS LOS NOMBRES REALES DE TU BASE DE DATOS: 'id' y 'duracion'
+            yield new Pelicula(
+                $fila['id'], 
+                $fila['titulo'],
+                $fila['sinopsis'],
+                (int)$fila['duracion'], 
+                $fila['imagen'],
+                (int)$fila['id_clasificacion']
+            );
         }
+
+    } finally {
+        $this->bd->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
     }
+}
+
+public function recuperaPorId(int $id_pelicula): ?Pelicula {
+    $sql = "SELECT * FROM peliculas WHERE id = :id_pelicula";
+    $resultado = $this->bd->prepare($sql);
+    $resultado->execute([':id_pelicula' => $id_pelicula]);
+
+    $fila = $resultado->fetch(PDO::FETCH_ASSOC);
+
+    if (!$fila) return null;
+
+    return new Pelicula(
+        $fila['id'], // 'id' en lugar de 'id_pelicula'
+        $fila['titulo'],
+        $fila['sinopsis'],
+        (int)$fila['duracion'], // 'duracion' en lugar de 'duracion_min'
+        $fila['imagen'],
+        (int)$fila['id_clasificacion']
+    );
+}
 }

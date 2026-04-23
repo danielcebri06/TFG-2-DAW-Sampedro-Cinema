@@ -1,5 +1,6 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http'; 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 
@@ -14,10 +15,8 @@ import { ReservaEntradasComponent } from './reserva-entradas/reserva-entradas';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
-  ],
-  providers: [
-    provideBrowserGlobalErrorListeners(),
+    AppRoutingModule,
+    HttpClientModule // Permite las peticiones a la API
   ],
   bootstrap: [App]
 })

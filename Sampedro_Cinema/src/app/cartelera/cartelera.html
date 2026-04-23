@@ -1,25 +1,28 @@
 <div class="container-fluid mt-4 px-4">
   <div class="wireframe-frame mb-4 p-3 bg-white">
-    <div class="border border-dark d-flex align-items-center justify-content-center mb-3 bg-light" style="height: 250px;">
+    <div class="border border-dark d-flex align-items-center justify-content-center mb-3 bg-light" style="height: 200px;">
       <h2 class="fw-bold text-dark m-0">HOY EN CARTELERA</h2>
+    </div>
+    <div class="d-flex gap-2">
+      <select class="form-select border-dark rounded-0"><option>Ciudad</option></select>
+      <button class="btn btn-red px-4 fw-bold">BUSCAR</button>
     </div>
   </div>
 
-  <h4 class="fw-bold text-dark mb-3">CARTELERA DE CINES</h4>
-  <div class="row g-3">
+  <h4 class="fw-bold text-dark mb-3">PELÍCULAS DISPONIBLES</h4>
+ 
+  <div class="row g-4">
     <div class="col-md-3" *ngFor="let peli of peliculas">
       <div class="wireframe-frame text-center p-0 bg-white h-100 d-flex flex-column">
-        <div class="border-bottom border-dark d-flex align-items-center justify-content-center bg-light" style="height: 120px;">
-          <span class="text-danger fs-1">▶</span>
+        <div class="border-bottom border-dark" style="height: 380px; overflow: hidden;">
+        <img [src]="peli.id_pelicula + '.png'" class="w-100 h-100" style="object-fit: cover;">
         </div>
-        <div class="p-2 flex-grow-1 d-flex flex-column">
-          <h6 class="fw-bold mt-2 text-dark text-truncate">{{ peli.titulo }}</h6>
-          <p class="text-muted small mb-1">{{ peli.generos[0] }}</p>
-          <div class="d-flex justify-content-center gap-1 mb-3">
-            <span class="badge border border-dark text-dark bg-white">{{ peli.edad }}</span>
-            <span class="badge border border-dark text-dark bg-white">{{ peli.duracion }}</span>
-          </div>
-          <a [routerLink]="['/reservar', peli.id]" class="btn btn-red w-100 rounded-0 mt-auto fw-bold">VER DETALLES</a>
+        <div class="p-3 flex-grow-1 d-flex flex-column">
+          <h5 class="fw-bold text-dark text-truncate">{{ peli.titulo }}</h5>
+          <p class="text-muted small">Duración: {{ peli.duracion_min }} min</p>
+          <a [routerLink]="['/reservar', peli.id_pelicula]" class="btn btn-red w-100 rounded-0 mt-auto fw-bold">
+            VER DETALLES / COMPRAR
+          </a>
         </div>
       </div>
     </div>

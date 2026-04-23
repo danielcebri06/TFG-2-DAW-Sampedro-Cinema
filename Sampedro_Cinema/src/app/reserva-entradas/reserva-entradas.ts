@@ -20,6 +20,7 @@ export class ReservaEntradasComponent implements OnInit {
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.cineService.getPelicula(id).subscribe(p => this.pelicula = p);
+    // Cargamos sesiones reales desde PHP
     this.cineService.getSesiones(id).subscribe(s => this.sesiones = s);
   }
 
@@ -27,20 +28,24 @@ export class ReservaEntradasComponent implements OnInit {
     const idSesion = Number(event.target.value);
     this.sesionSeleccionada = this.sesiones.find(s => s.id === idSesion);
     this.asientosSeleccionados = []; 
+    
     if (this.sesionSeleccionada) {
-      this.cineService.getAsientos(this.sesionSeleccionada.id).subscribe(a => this.asientosDeLaSala = a);
+      //  Pasamos el ID de la sesión y el ID de la sala física
+      this.cineService.getAsientos(this.sesionSeleccionada.id, this.sesionSeleccionada.id_sala)
+          .subscribe(a => this.asientosDeLaSala = a);
     } else {
       this.asientosDeLaSala = [];
     }
   }
 
   seleccionarAsiento(asiento: any) {
-    if (asiento.estado === 'Ocupado') return;
+    if (asiento.estado === 'Ocupado') return; // Si viene ocupado de BD, no hace nada
+    
     if (asiento.estado === 'Libre') {
-      asiento.estado = 'Reservado';
+      asiento.estado = 'Reservado'; // Lo marcamos visualmente
       this.asientosSeleccionados.push(asiento);
     } else {
-      asiento.estado = 'Libre';
+      asiento.estado = 'Libre'; // Lo desmarcamos
       this.asientosSeleccionados = this.asientosSeleccionados.filter(a => a.id !== asiento.id);
     }
   }
@@ -51,6 +56,6 @@ export class ReservaEntradasComponent implements OnInit {
 
   confirmarCompra() {
     if (this.asientosSeleccionados.length === 0) return alert('Selecciona un asiento primero.');
-    alert(`¡Compra confirmada! Total: ${this.precioTotal}€`);
+    alert(`¡Reserva lista! IDs de DB a guardar: ${this.asientosSeleccionados.map(a => a.id_real_db).join(', ')}`);
   }
 }
