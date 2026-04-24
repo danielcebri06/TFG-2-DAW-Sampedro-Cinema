@@ -12,9 +12,10 @@ class SesionDAO {
     }
     
     public function recuperarPorPelicula(int $id_pelicula): array {
+        // Hacemos JOIN con salas para enviarle a Angular el número de sala
         $sql = "SELECT s.*, sa.numero as numero_sala 
                 FROM sesiones s 
-                JOIN salas sa ON s.id_sala = sa.id_sala 
+                JOIN salas sa ON s.id_sala = sa.id 
                 WHERE s.id_pelicula = :id_pelicula 
                 ORDER BY s.fecha_hora";
         

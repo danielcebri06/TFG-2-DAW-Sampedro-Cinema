@@ -33,11 +33,10 @@ class ApiAsientoController {
             $asientosFront = [];
             foreach ($asientosDB as $a) {
                 $asientosFront[] = [
-                    'id' => 'F' . $a['fila'] . 'N' . $a['numero'],
-                    'id_real_db' => (int) $a['id_asiento'],
-                    'fila' => (int) $a['fila'],
-                    'numero' => (int) $a['numero'],
-                    'tipo' => $a['tipo'],
+                    'id' => $a['fila'] . $a['numero'],
+                    'id_real_db' => $a['id'],
+                    'fila' => $a['fila'],
+                    'numero' => $a['numero'],
                     'estado' => $a['estado']
                 ];
             }

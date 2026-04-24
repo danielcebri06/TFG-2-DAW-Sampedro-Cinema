@@ -6,22 +6,20 @@ class Pelicula{
     private ?int $id_pelicula;
     private string $titulo;
     private string $sinopsis;
-    private int $duracion_minutos;
+    private int $duracion_min;
     private string $imagen;
-    private ?string $fecha_estreno;
     private int $id_clasificacion;
 
     public function __construct(
             ?int $id_pelicula, string $titulo, 
-            string $sinopsis, int $duracion_minutos,
-            string $imagen, ?string $fecha_estreno, int $id_clasificacion
+            string $sinopsis, int $duracion_min, 
+            string $imagen,int $id_clasificacion
     ) {
         $this->id_pelicula = $id_pelicula;
         $this->titulo = $titulo;
         $this->sinopsis = $sinopsis;
-        $this->duracion_minutos = $duracion_minutos;
+        $this->duracion_min = $duracion_min;
         $this->imagen = $imagen;
-        $this->fecha_estreno = $fecha_estreno;
         $this->id_clasificacion = $id_clasificacion;
     }
     
@@ -37,20 +35,12 @@ class Pelicula{
         return $this->sinopsis;
     }
 
-    public function getDuracion_minutos(): int {
-        return $this->duracion_minutos;
-    }
-
     public function getDuracion_min(): int {
-        return $this->duracion_minutos;
+        return $this->duracion_min;
     }
 
     public function getImagen(): string {
         return $this->imagen;
-    }
-
-    public function getFecha_estreno(): ?string {
-        return $this->fecha_estreno;
     }
 
     public function getId_clasificacion(): int {

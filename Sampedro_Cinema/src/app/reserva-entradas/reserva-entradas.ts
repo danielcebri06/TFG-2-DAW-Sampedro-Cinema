@@ -1,7 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CineService } from '../services/cine';
-import { forkJoin, TimeoutError } from 'rxjs';
 
 @Component({
   selector: 'app-reserva-entradas',
@@ -10,61 +9,19 @@ import { forkJoin, TimeoutError } from 'rxjs';
   styleUrls: ['./reserva-entradas.css']
 })
 export class ReservaEntradasComponent implements OnInit {
-  pelicula: any = null;
+  pelicula: any;
   sesiones: any[] = [];
   sesionSeleccionada: any = null;
   asientosDeLaSala: any[] = [];
   asientosSeleccionados: any[] = [];
-  cargando = true;
-  errorCarga = '';
 
-  constructor(
-    private cineService: CineService,
-    private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private cineService: CineService, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
-      const id = Number(params.get('id'));
-
-      if (!id) {
-        this.cargando = false;
-        this.errorCarga = 'La pelicula solicitada no es valida.';
-        this.cdr.detectChanges();
-        return;
-      }
-
-      this.cargando = true;
-      this.errorCarga = '';
-      this.pelicula = null;
-      this.sesiones = [];
-      this.sesionSeleccionada = null;
-      this.asientosDeLaSala = [];
-      this.asientosSeleccionados = [];
-
-      forkJoin({
-        pelicula: this.cineService.getPelicula(id),
-        sesiones: this.cineService.getSesiones(id)
-      }).subscribe({
-        next: ({ pelicula, sesiones }) => {
-          this.pelicula = pelicula;
-          this.sesiones = sesiones;
-          this.cargando = false;
-          this.cdr.detectChanges();
-        },
-        error: (error) => {
-          console.error('Error al cargar la reserva:', error);
-          if (error instanceof TimeoutError) {
-            this.errorCarga = 'El servidor tardó demasiado en responder. ¿Está MySQL corriendo?';
-          } else {
-            this.errorCarga = 'No se pudieron cargar los detalles de la pelicula.';
-          }
-          this.cargando = false;
-          this.cdr.detectChanges();
-        }
-      });
-    });
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.cineService.getPelicula(id).subscribe(p => this.pelicula = p);
+    // Cargamos sesiones reales desde PHP
+    this.cineService.getSesiones(id).subscribe(s => this.sesiones = s);
   }
 
   alSeleccionarSesion(event: any) {
@@ -75,15 +32,7 @@ export class ReservaEntradasComponent implements OnInit {
     if (this.sesionSeleccionada) {
       //  Pasamos el ID de la sesión y el ID de la sala física
       this.cineService.getAsientos(this.sesionSeleccionada.id, this.sesionSeleccionada.id_sala)
-          .subscribe({
-            next: (a) => {
-              this.asientosDeLaSala = a;
-            },
-            error: (error) => {
-              console.error('Error al cargar asientos:', error);
-              this.asientosDeLaSala = [];
-            }
-          });
+          .subscribe(a => this.asientosDeLaSala = a);
     } else {
       this.asientosDeLaSala = [];
     }
