@@ -6,12 +6,14 @@ import { App } from './app';
 
 import { CarteleraComponent } from './cartelera/cartelera';
 import { ReservaEntradasComponent } from './reserva-entradas/reserva-entradas';
+import { TestApiComponent } from './test-api/test-api';
 
 @NgModule({
   declarations: [
     App,
     CarteleraComponent,
-    ReservaEntradasComponent
+    ReservaEntradasComponent,
+    TestApiComponent
   ],
   imports: [
     BrowserModule,

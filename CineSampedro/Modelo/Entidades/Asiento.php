@@ -6,19 +6,22 @@ class Asiento {
 
     private ?int $id_asiento;
     private int $id_sala;
-    private string $fila;
+    private int $fila;
     private int $numero;
+    private string $tipo;
 
     public function __construct(
         ?int $id_asiento,
         int $id_sala,
-        string $fila,
-        int $numero
+        int $fila,
+        int $numero,
+        string $tipo = 'normal'
     ) {
         $this->id_asiento = $id_asiento;
         $this->id_sala = $id_sala;
         $this->fila = $fila;
         $this->numero = $numero;
+        $this->tipo = $tipo;
     }
 
     public function getId_asiento(): ?int {
@@ -29,11 +32,15 @@ class Asiento {
         return $this->id_sala;
     }
 
-    public function getFila(): string {
+    public function getFila(): int {
         return $this->fila;
     }
 
     public function getNumero(): int {
         return $this->numero;
+    }
+
+    public function getTipo(): string {
+        return $this->tipo;
     }
 }

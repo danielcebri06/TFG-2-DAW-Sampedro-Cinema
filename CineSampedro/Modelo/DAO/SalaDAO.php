@@ -15,7 +15,7 @@ class SalaDAO {
     public function crear (Sala $sala): int {
         $sql = "INSERT INTO salas (numero, capacidad) VALUES (:numero, :capacidad)";
         
-        $resultado = $this->bd_prepare($sql);
+        $resultado = $this->bd->prepare($sql);
         
         $resultado->execute([
             ':numero' => $sala->getNumero(),

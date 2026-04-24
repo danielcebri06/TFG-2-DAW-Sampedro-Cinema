@@ -43,11 +43,23 @@ class ApiPeliculaController {
     }
     
     private function validarDatosPelicula(array $datos): bool {
+         $duracion = $datos['duracion_minutos'] ?? $datos['duracion_min'] ?? null;
+
         return !empty($datos['titulo']) &&
                !empty($datos['sinopsis']) &&
-               isset($datos['duracion_min']) &&
+             $duracion !== null &&
                !empty($datos['imagen']) &&
                isset($datos['id_clasificacion']);
+    }
+
+    private function obtenerNombreClasificacion(int $idClasificacion): ?string {
+        $bd = BD::getConexion();
+        $sql = "SELECT nombre FROM clasificaciones_edad WHERE id_clasificacion = :id_clasificacion LIMIT 1";
+        $resultado = $bd->prepare($sql);
+        $resultado->execute([':id_clasificacion' => $idClasificacion]);
+        $fila = $resultado->fetch(\PDO::FETCH_ASSOC);
+
+        return $fila['nombre'] ?? null;
     }
     
     public function listar(): void {
@@ -59,7 +71,9 @@ class ApiPeliculaController {
                     'titulo' => $pelicula->getTitulo(),
                     'sinopsis' => $pelicula->getSinopsis(),
                     'duracion_min' => $pelicula->getDuracion_min(),
+                    'duracion_minutos' => $pelicula->getDuracion_minutos(),
                     'imagen' => $pelicula->getImagen(),
+                    'fecha_estreno' => $pelicula->getFecha_estreno(),
                     'id_clasificacion' => $pelicula->getId_clasificacion()
                 ];
             }
@@ -79,14 +93,20 @@ class ApiPeliculaController {
             if (!$pelicula) {
                 $this->enviarRespuesta(['mensaje' => 'Película no encontrada'], 404);
             }
+
+            $idClasificacion = $pelicula->getId_clasificacion();
+            $nombreClasificacion = $this->obtenerNombreClasificacion($idClasificacion);
             
             $this->enviarRespuesta([
                 'id_pelicula' => $pelicula->getId_pelicula(),
                 'titulo' => $pelicula->getTitulo(),
                 'sinopsis' => $pelicula->getSinopsis(),
                 'duracion_min' => $pelicula->getDuracion_min(),
+                'duracion_minutos' => $pelicula->getDuracion_minutos(),
                 'imagen' => $pelicula->getImagen(),
-                'id_clasificacion' => $pelicula->getId_clasificacion()
+                'fecha_estreno' => $pelicula->getFecha_estreno(),
+                'id_clasificacion' => $idClasificacion,
+                'clasificacion' => $nombreClasificacion
             ]);
         } catch (PDOException $e) {
             $this->enviarRespuesta([
@@ -103,13 +123,17 @@ class ApiPeliculaController {
             if (!$datos || !$this->validarDatosPelicula($datos)) {
                 $this->enviarRespuesta(['mensaje' => 'Datos de película incompletos o inválidos'], 400);
             }
+
+            $duracion = (int) ($datos['duracion_minutos'] ?? $datos['duracion_min']);
+            $fechaEstreno = $datos['fecha_estreno'] ?? null;
             
             $pelicula = new Pelicula(
                 null,
                 $datos['titulo'],
                 $datos['sinopsis'],
-                (int) $datos['duracion_min'],
+                $duracion,
                 $datos['imagen'],
+                $fechaEstreno,
                 (int) $datos['id_clasificacion']
             );
             
@@ -141,12 +165,16 @@ class ApiPeliculaController {
                 $this->enviarRespuesta(['mensaje' => 'Datos de película incompletos o inválidos'], 400);
             }
 
+            $duracion = (int) ($datos['duracion_minutos'] ?? $datos['duracion_min']);
+            $fechaEstreno = $datos['fecha_estreno'] ?? null;
+
             $pelicula = new Pelicula(
                 $id_pelicula,
                 $datos['titulo'],
                 $datos['sinopsis'],
-                (int) $datos['duracion_min'],
+                $duracion,
                 $datos['imagen'],
+                $fechaEstreno,
                 (int) $datos['id_clasificacion']
             );  
             

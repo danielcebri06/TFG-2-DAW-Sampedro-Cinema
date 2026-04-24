@@ -8,7 +8,7 @@ class BD {
     protected static ?PDO $bd = null;
 
     const HOST = '127.0.0.1';
-    const DATABASE = 'gestion_cine';
+    const DATABASE = 'bd_cinema';
     const USERNAME = 'root';
     const PASSWORD = '';
 

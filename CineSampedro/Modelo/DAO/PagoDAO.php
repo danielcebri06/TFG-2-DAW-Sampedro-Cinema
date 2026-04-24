@@ -15,9 +15,9 @@ class PagoDAO {
 
     public function crear(Pago $pago): int {
         $sql = "INSERT INTO pagos
-                (id_reserva, importe, estado, fecha_hora, stripe_payment_intent)
+                (id_reserva, importe, estado, fecha_hora, stripe_payment_intent_id)
                 VALUES
-                (:id_reserva, :importe, :estado, :fecha_hora, :stripe_payment_intent)";
+                (:id_reserva, :importe, :estado, :fecha_hora, :stripe_payment_intent_id)";
 
         $resultado = $this->bd->prepare($sql);
 
@@ -26,7 +26,7 @@ class PagoDAO {
             ':importe' => $pago->getImporte(),
             ':estado' => $pago->getEstado(),
             ':fecha_hora' => $pago->getFecha_hora(),
-            ':stripe_payment_intent' => $pago->getStripe_payment_intent()
+            ':stripe_payment_intent_id' => $pago->getStripe_payment_intent_id()
         ]);
 
         return $resultado->rowCount();
@@ -38,7 +38,7 @@ class PagoDAO {
                     importe = :importe,
                     estado = :estado,
                     fecha_hora = :fecha_hora,
-                    stripe_payment_intent = :stripe_payment_intent
+                    stripe_payment_intent_id = :stripe_payment_intent_id
                 WHERE id_pago = :id_pago";
 
         $resultado = $this->bd->prepare($sql);
@@ -48,7 +48,7 @@ class PagoDAO {
             ':importe' => $pago->getImporte(),
             ':estado' => $pago->getEstado(),
             ':fecha_hora' => $pago->getFecha_hora(),
-            ':stripe_payment_intent' => $pago->getStripe_payment_intent(),
+            ':stripe_payment_intent_id' => $pago->getStripe_payment_intent_id(),
             ':id_pago' => $pago->getId_pago()
         ]);
 
@@ -86,7 +86,7 @@ class PagoDAO {
             (float) $fila['importe'],
             $fila['estado'],
             $fila['fecha_hora'],
-            $fila['stripe_payment_intent']
+            $fila['stripe_payment_intent_id']
         );
     }
 
@@ -104,7 +104,7 @@ class PagoDAO {
                 (float) $fila['importe'],
                 $fila['estado'],
                 $fila['fecha_hora'],
-                $fila['stripe_payment_intent']
+                $fila['stripe_payment_intent_id']
             );
         }
 
@@ -130,7 +130,7 @@ class PagoDAO {
                 (float) $fila['importe'],
                 $fila['estado'],
                 $fila['fecha_hora'],
-                $fila['stripe_payment_intent']
+                $fila['stripe_payment_intent_id']
             );
         }
 

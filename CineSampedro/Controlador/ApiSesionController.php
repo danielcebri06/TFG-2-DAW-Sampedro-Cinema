@@ -32,12 +32,12 @@ class ApiSesionController {
             // Formateamos las fechas y datos para que Angular los entienda fácil
             $resultado = array_map(function($s) {
                 return [
-                    'id' => $s['id'],
+                    'id' => (int) $s['id_sesion'],
                     'fecha' => date('d/m/Y', strtotime($s['fecha_hora'])),
                     'hora' => date('H:i', strtotime($s['fecha_hora'])),
                     'formato' => 'Sala ' . $s['numero_sala'],
                     'precio' => (float)$s['precio'],
-                    'id_sala' => $s['id_sala']
+                    'id_sala' => (int) $s['id_sala']
                 ];
             }, $sesiones);
 
