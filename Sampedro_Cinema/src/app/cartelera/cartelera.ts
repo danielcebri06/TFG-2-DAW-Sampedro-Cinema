@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CineService } from '../services/cine';
 
 @Component({
@@ -8,24 +8,20 @@ import { CineService } from '../services/cine';
   styleUrls: ['./cartelera.css'] // Asegúrate de que el nombre de tu CSS coincida
 })
 export class CarteleraComponent implements OnInit {
-  peliculas: any[] = [];
-  cargando = true;
-  error = '';
+  
+  // 1. Declaramos la variable global del componente
+  peliculas: any[] = []; 
 
-  constructor(private cineService: CineService, private cdr: ChangeDetectorRef) {}
+  constructor(private cineService: CineService) {}
 
   ngOnInit(): void {
     this.cineService.getPeliculas().subscribe({
       next: (datos) => {
-        this.peliculas = datos;
-        this.cargando = false;
-        this.cdr.detectChanges();
+        this.peliculas = datos; 
+        console.log('Datos guardados en this.peliculas:', this.peliculas);
       },
-      error: (err) => {
-        console.error('Error al traer películas:', err);
-        this.error = 'No se pudo conectar con el servidor. ¿Está el backend corriendo?';
-        this.cargando = false;
-        this.cdr.detectChanges();
+      error: (error) => {
+        console.error('Error al traer películas:', error);
       }
     });
   }

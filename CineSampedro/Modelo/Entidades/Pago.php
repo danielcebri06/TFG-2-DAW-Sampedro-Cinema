@@ -8,7 +8,7 @@ class Pago {
     private float $importe;
     private string $estado;
     private string $fecha_hora;
-    private string $stripe_payment_intent_id;
+    private string $stripe_payment_intent;
 
     public function __construct(
         ?int $id_pago,
@@ -16,14 +16,14 @@ class Pago {
         float $importe,
         string $estado,
         string $fecha_hora,
-        string $stripe_payment_intent_id
+        string $stripe_payment_intent
     ) {
         $this->id_pago = $id_pago;
         $this->id_reserva = $id_reserva;
         $this->importe = $importe;
         $this->estado = $estado;
         $this->fecha_hora = $fecha_hora;
-        $this->stripe_payment_intent_id = $stripe_payment_intent_id;
+        $this->stripe_payment_intent = $stripe_payment_intent;
     }
 
     public function getId_pago(): ?int {
@@ -46,12 +46,8 @@ class Pago {
         return $this->fecha_hora;
     }
 
-    public function getStripe_payment_intent_id(): string {
-        return $this->stripe_payment_intent_id;
-    }
-
     public function getStripe_payment_intent(): string {
-        return $this->stripe_payment_intent_id;
+        return $this->stripe_payment_intent;
     }
 }
 

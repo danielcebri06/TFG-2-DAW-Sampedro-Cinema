@@ -15,18 +15,17 @@ class PeliculaDAO {
 
     public function crear(Pelicula $pelicula): int {
         $sql = "INSERT INTO peliculas 
-                (titulo, sinopsis, duracion_minutos, imagen, fecha_estreno, id_clasificacion)
+                (titulo, sinopsis, duracion_min, imagen, id_clasificacion)
                 VALUES 
-                (:titulo, :sinopsis, :duracion_minutos, :imagen, :fecha_estreno, :id_clasificacion)";
+                (:titulo, :sinopsis, :duracion_min, :imagen, :id_clasificacion)";
 
         $resultado = $this->bd->prepare($sql);
 
         $resultado->execute([
             ':titulo' => $pelicula->getTitulo(),
             ':sinopsis' => $pelicula->getSinopsis(),
-            ':duracion_minutos' => $pelicula->getDuracion_minutos(),
+            ':duracion_min' => $pelicula->getDuracion_min(),
             ':imagen' => $pelicula->getImagen(),
-            ':fecha_estreno' => $pelicula->getFecha_estreno(),
             ':id_clasificacion' => $pelicula->getId_clasificacion()
         ]);
 
@@ -37,9 +36,8 @@ class PeliculaDAO {
         $sql = "UPDATE peliculas 
                 SET titulo = :titulo,
                     sinopsis = :sinopsis,
-                    duracion_minutos = :duracion_minutos,
+                    duracion_min = :duracion_min,
                     imagen = :imagen,
-                    fecha_estreno = :fecha_estreno,
                     id_clasificacion = :id_clasificacion
                 WHERE id_pelicula = :id_pelicula";
 
@@ -48,9 +46,8 @@ class PeliculaDAO {
         $resultado->execute([
             ':titulo' => $pelicula->getTitulo(),
             ':sinopsis' => $pelicula->getSinopsis(),
-            ':duracion_minutos' => $pelicula->getDuracion_minutos(),
+            ':duracion_min' => $pelicula->getDuracion_min(),
             ':imagen' => $pelicula->getImagen(),
-            ':fecha_estreno' => $pelicula->getFecha_estreno(),
             ':id_clasificacion' => $pelicula->getId_clasificacion(),
             ':id_pelicula' => $pelicula->getId_pelicula()
         ]);
@@ -80,13 +77,13 @@ class PeliculaDAO {
         $resultado->execute();
 
         while ($fila = $resultado->fetch(PDO::FETCH_ASSOC)) {
+            // USAMOS LOS NOMBRES REALES DE TU BASE DE DATOS: 'id' y 'duracion'
             yield new Pelicula(
-                (int) $fila['id_pelicula'],
+                $fila['id'], 
                 $fila['titulo'],
                 $fila['sinopsis'],
-                (int) $fila['duracion_minutos'],
+                (int)$fila['duracion'], 
                 $fila['imagen'],
-                $fila['fecha_estreno'],
                 (int)$fila['id_clasificacion']
             );
         }
@@ -97,7 +94,7 @@ class PeliculaDAO {
 }
 
 public function recuperaPorId(int $id_pelicula): ?Pelicula {
-    $sql = "SELECT * FROM peliculas WHERE id_pelicula = :id_pelicula";
+    $sql = "SELECT * FROM peliculas WHERE id = :id_pelicula";
     $resultado = $this->bd->prepare($sql);
     $resultado->execute([':id_pelicula' => $id_pelicula]);
 
@@ -106,12 +103,11 @@ public function recuperaPorId(int $id_pelicula): ?Pelicula {
     if (!$fila) return null;
 
     return new Pelicula(
-        (int) $fila['id_pelicula'],
+        $fila['id'], // 'id' en lugar de 'id_pelicula'
         $fila['titulo'],
         $fila['sinopsis'],
-        (int) $fila['duracion_minutos'],
+        (int)$fila['duracion'], // 'duracion' en lugar de 'duracion_min'
         $fila['imagen'],
-        $fila['fecha_estreno'],
         (int)$fila['id_clasificacion']
     );
 }

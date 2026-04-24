@@ -31,14 +31,13 @@ class ApiPagoController {
     }
 
     private function validarDatosPago(array $datos): bool {
-        $paymentIntent = $datos['stripe_payment_intent_id'] ?? $datos['stripe_payment_intent'] ?? null;
-
         return isset(
             $datos['id_reserva'],
             $datos['importe'],
             $datos['estado'],
-            $datos['fecha_hora']
-        ) && $paymentIntent !== null;
+            $datos['fecha_hora'],
+            $datos['stripe_payment_intent']
+        );
     }
 
     public function listar(): void {
@@ -52,7 +51,6 @@ class ApiPagoController {
                     'importe' => $pago->getImporte(),
                     'estado' => $pago->getEstado(),
                     'fecha_hora' => $pago->getFecha_hora(),
-                    'stripe_payment_intent_id' => $pago->getStripe_payment_intent_id(),
                     'stripe_payment_intent' => $pago->getStripe_payment_intent()
                 ];
             }
@@ -83,7 +81,6 @@ class ApiPagoController {
                 'importe' => $pago->getImporte(),
                 'estado' => $pago->getEstado(),
                 'fecha_hora' => $pago->getFecha_hora(),
-                'stripe_payment_intent_id' => $pago->getStripe_payment_intent_id(),
                 'stripe_payment_intent' => $pago->getStripe_payment_intent()
             ]);
 
@@ -105,15 +102,13 @@ class ApiPagoController {
                 ], 400);
             }
 
-            $paymentIntent = $datos['stripe_payment_intent_id'] ?? $datos['stripe_payment_intent'];
-
             $pago = new Pago(
                 null,
                 (int) $datos['id_reserva'],
                 (float) $datos['importe'],
                 $datos['estado'],
                 $datos['fecha_hora'],
-                $paymentIntent
+                $datos['stripe_payment_intent']
             );
 
             $filas = $this->pagoDAO->crear($pago);
@@ -149,15 +144,13 @@ class ApiPagoController {
                 ], 400);
             }
 
-            $paymentIntent = $datos['stripe_payment_intent_id'] ?? $datos['stripe_payment_intent'];
-
             $pago = new Pago(
                 $id_pago,
                 (int) $datos['id_reserva'],
                 (float) $datos['importe'],
                 $datos['estado'],
                 $datos['fecha_hora'],
-                $paymentIntent
+                $datos['stripe_payment_intent']
             );
 
             $filas = $this->pagoDAO->modificar($pago);
@@ -211,7 +204,6 @@ class ApiPagoController {
                     'importe' => $pago->getImporte(),
                     'estado' => $pago->getEstado(),
                     'fecha_hora' => $pago->getFecha_hora(),
-                    'stripe_payment_intent_id' => $pago->getStripe_payment_intent_id(),
                     'stripe_payment_intent' => $pago->getStripe_payment_intent()
                 ];
             }

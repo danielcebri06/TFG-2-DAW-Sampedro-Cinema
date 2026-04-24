@@ -1,26 +1,14 @@
-<div class="container-fluid mt-4 px-4" *ngIf="cargando">
-  <div class="wireframe-frame p-4 bg-white">
-    <p class="mb-0 fw-bold">Cargando detalles de la pelicula...</p>
-  </div>
-</div>
-
-<div class="container-fluid mt-4 px-4" *ngIf="!cargando && errorCarga">
-  <div class="wireframe-frame p-4 bg-white">
-    <p class="mb-0 text-danger fw-bold">{{ errorCarga }}</p>
-  </div>
-</div>
-
-<div class="container-fluid mt-4 px-4" *ngIf="!cargando && pelicula">
+<div class="container-fluid mt-4 px-4" *ngIf="pelicula">
   <div class="wireframe-frame mb-4 p-3 bg-white">
     <div class="row">
       <div class="col-md-4">
         <div class="border border-dark" style="height: 450px;">
-           <img [src]="'/IMAGENES/' + pelicula.imagen" class="w-100 h-100" style="object-fit: cover;">
+           <img [src]="pelicula.imagen" class="w-100 h-100" style="object-fit: cover;">
         </div>
       </div>
       <div class="col-md-8">
         <h2 class="fw-bold text-dark">{{ pelicula.titulo }}</h2>
-        <p class="text-muted">Clasificación: {{ pelicula.clasificacion || pelicula.id_clasificacion }} | {{ pelicula.duracion_min }} min</p>
+        <p class="text-muted">Clasificación ID: {{ pelicula.id_clasificacion }} | {{ pelicula.duracion_min }} min</p>
         <p class="mb-4">{{ pelicula.sinopsis }}</p>
         
         <h6 class="fw-bold">SELECCIONA SESIÓN:</h6>
