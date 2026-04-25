@@ -52,12 +52,14 @@ VALUES (1, 1, 'normal', 1), (1, 2, 'normal', 1), (1, 3, 'PMR', 1);
 Desde la raiz del repo (`TFG-2-DAW-Sampedro-Cinema`):
 
 ```powershell
-php -S 127.0.0.1:8000 -t .
+php -S localhost:8000 -t .
 ```
 
 Esto expone tus endpoints en:
-- `http://127.0.0.1:8000/Api/...`
-- `http://127.0.0.1:8000/CineSampedro/public/api/...`
+- `http://localhost:8000/Api/...`
+- `http://localhost:8000/CineSampedro/public/api/...`
+
+Importante: usa siempre el mismo host (`localhost`) en backend, Postman y proxy de Angular para evitar conflictos IPv4/IPv6.
 
 ## 4) Probar en Postman (JSON)
 
@@ -65,20 +67,20 @@ Esto expone tus endpoints en:
 
 - Listar:
   - Metodo: `GET`
-  - URL: `http://127.0.0.1:8000/Api/listar_peliculas.php`
+  - URL: `http://localhost:8000/Api/listar_peliculas.php`
 - Obtener 1 pelicula:
   - Metodo: `GET`
-  - URL: `http://127.0.0.1:8000/Api/obtener_pelicula.php?id=1`
+  - URL: `http://localhost:8000/Api/obtener_pelicula.php?id=1`
 
 ### Sesiones por pelicula
 
 - Metodo: `GET`
-- URL: `http://127.0.0.1:8000/Api/obtener_sesiones.php?id_pelicula=1`
+- URL: `http://localhost:8000/Api/obtener_sesiones.php?id_pelicula=1`
 
 ### Asientos por sesion y sala
 
 - Metodo: `GET`
-- URL: `http://127.0.0.1:8000/Api/obtener_asientos.php?id_sesion=1&id_sala=1`
+- URL: `http://localhost:8000/Api/obtener_asientos.php?id_sesion=1&id_sala=1`
 
 Si no hay datos cargados, es normal recibir `[]`.
 
@@ -95,7 +97,7 @@ Quedo configurado proxy en `Sampedro_Cinema/proxy.conf.json` y servicio Angular 
 - `/api/listar_peliculas.php`
 - `/api/obtener_pelicula.php?id=...`
 
-El dev server redirige eso automaticamente a `http://127.0.0.1:8000/api`.
+El dev server redirige eso automaticamente a `http://localhost:8000/Api`.
 
 Importante: para que funcione, el servidor PHP debe estar encendido al mismo tiempo.
 
@@ -113,7 +115,8 @@ Importante: para que funcione, el servidor PHP debe estar encendido al mismo tie
    - Reimporta `bd_cinema.sql`.
    - Verifica que el backend apunte a `bd_cinema`.
 2. Error `ECONNREFUSED` en Angular:
-   - Falta arrancar `php -S 127.0.0.1:8000 -t .`.
+   - Arranca el backend con `php -S localhost:8000 -t .`.
+   - No mezcles `localhost` y `127.0.0.1` entre backend/proxy/Postman: en algunos equipos `localhost` resuelve a IPv6 (`::1`) y `127.0.0.1` es IPv4, y si no coinciden aparece `ECONNREFUSED`.
 3. Angular no trae API:
    - Verifica `proxy.conf.json` y reinicia `npm start`.
 4. Respuesta vacia:
