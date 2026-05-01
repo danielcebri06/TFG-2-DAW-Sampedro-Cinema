@@ -168,7 +168,7 @@ class ApiSesionController {
 
     public function eliminar(int $id_sesion): void {
         try {
-            $sesionExistente = $this->sesionDAO->recuperaPorId($id_sesion);
+            $sesionExistente = $this->sesionDAO->recuperarPorId($id_sesion);
 
             if (!$sesionExistente) {
                 $this->enviarRespuesta([
