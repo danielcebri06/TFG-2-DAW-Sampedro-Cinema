@@ -190,4 +190,32 @@ class ApiSesionController {
             ], 500);
         }
     }
+
+    public function obtenerPorPelicula(int $id_pelicula): void {
+        try {
+            $sesiones = [];
+
+            foreach ($this->sesionDAO->recuperarPorPelicula($id_pelicula) as $sesion) {
+                $sesiones[] = [
+                    'id' => (int) $sesion['id_sesion'],
+                    'id_sesion' => (int) $sesion['id_sesion'],
+                    'fecha_hora' => $sesion['fecha_hora'],
+                    'fecha' => date('d/m/Y', strtotime($sesion['fecha_hora'])),
+                    'hora' => date('H:i', strtotime($sesion['fecha_hora'])),
+                    'precio' => (float) $sesion['precio'],
+                    'id_pelicula' => (int) $sesion['id_pelicula'],
+                    'id_sala' => (int) $sesion['id_sala'],
+                    'formato' => 'Sala ' . $sesion['numero_sala']
+                ];
+            }
+
+            $this->enviarRespuesta($sesiones);
+
+        } catch (PDOException $e) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Error al recuperar las sesiones de la película',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
