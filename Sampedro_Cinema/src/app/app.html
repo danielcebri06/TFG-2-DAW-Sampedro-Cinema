@@ -2,11 +2,32 @@
   <div class="container-fluid px-4">
     <a class="navbar-brand fw-bold text-dark fs-4" routerLink="/cartelera">SAMPEDRO CINEMA</a>
     <div class="collapse navbar-collapse justify-content-center">
-      <ul class="navbar-nav fw-bold">
-        <li class="nav-item"><a class="nav-link text-dark text-decoration-underline" routerLink="/cartelera">Cartelera</a></li>
-        <li class="nav-item"><a class="nav-link text-dark" href="#">Mis Entradas</a></li>
-        <li class="nav-item"><a class="nav-link text-dark" href="#">Admin</a></li>
-      </ul>
+    <ul class="navbar-nav fw-bold">
+      <li class="nav-item">
+        <a 
+          class="nav-link text-dark"
+          routerLink="/cartelera"
+          routerLinkActive="activo-menu"
+          [routerLinkActiveOptions]="{ exact: true }">
+          Cartelera
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="#">
+          Mis Entradas
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a 
+          class="nav-link text-dark"
+          routerLink="/admin"
+          routerLinkActive="activo-menu">
+          Admin
+        </a>
+      </li>
+    </ul>
     </div>
     <button class="btn btn-outline-dark bg-white rounded-0 fw-bold border-2">Iniciar Sesión</button>
   </div>
