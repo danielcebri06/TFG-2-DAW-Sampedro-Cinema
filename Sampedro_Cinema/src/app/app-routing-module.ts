@@ -3,12 +3,22 @@ import { RouterModule, Routes } from '@angular/router';
 import { CarteleraComponent } from './cartelera/cartelera';
 import { ReservaEntradasComponent } from './reserva-entradas/reserva-entradas';
 import { TestApiComponent } from './test-api/test-api';
+import { AdminDashboard } from './admin/admin-dashboard/admin-dashboard';
+import { AdminPeliculas } from './admin/admin-peliculas/admin-peliculas';
+import { AdminSesiones } from './admin/admin-sesiones/admin-sesiones';
+import { AdminSalas } from './admin/admin-salas/admin-salas';
 
 const routes: Routes = [
   { path: '', component: CarteleraComponent },
   { path: 'cartelera', component: CarteleraComponent },
   { path: 'reservar/:id', component: ReservaEntradasComponent },
   { path: 'test', component: TestApiComponent },
+
+  { path: 'admin', component: AdminDashboard },
+  { path: 'admin/peliculas', component: AdminPeliculas },
+  { path: 'admin/sesiones', component: AdminSesiones },
+  { path: 'admin/salas', component: AdminSalas },
+
   { path: '**', redirectTo: '' }
 ];
 
@@ -17,3 +27,6 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+
+
+
