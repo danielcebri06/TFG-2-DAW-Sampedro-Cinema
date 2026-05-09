@@ -13,6 +13,7 @@ import { AdminPeliculas } from './admin/admin-peliculas/admin-peliculas';
 import { AdminSesiones } from './admin/admin-sesiones/admin-sesiones';
 import { AdminSalas } from './admin/admin-salas/admin-salas';
 import { AdminPeliculaForm } from './admin/admin-pelicula-form/admin-pelicula-form';
+import { AdminSesionForm } from './admin/admin-sesion-form/admin-sesion-form';
 
 @NgModule({
   declarations: [
@@ -25,12 +26,13 @@ import { AdminPeliculaForm } from './admin/admin-pelicula-form/admin-pelicula-fo
     AdminSesiones,
     AdminSalas,
     AdminPeliculaForm,
+    AdminSesionForm,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule, // Permite las peticiones a la API
-    FormsModule
+    FormsModule,
   ],
   bootstrap: [App],
 })
