@@ -1,0 +1,109 @@
+<div class="container mt-4">
+
+  <h1>{{ modoEditar ? 'Editar sesión' : 'Nueva sesión' }}</h1>
+  <p>
+    {{ modoEditar ? 'Formulario para modificar una sesión existente.' : 'Formulario para registrar una sesión en la base de datos.' }}
+  </p>
+
+  @if (cargando) {
+    <div class="alert alert-info">
+      Cargando datos de la sesión...
+    </div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+  }
+
+  @if (mensaje) {
+    <div class="alert alert-success">
+      {{ mensaje }}
+    </div>
+  }
+
+  @if (!cargando) {
+    <form class="mt-4" (ngSubmit)="guardarSesion()">
+
+      <div class="mb-3">
+        <label class="form-label">Fecha y hora</label>
+        <input
+          type="datetime-local"
+          class="form-control"
+          name="fecha_hora"
+          [(ngModel)]="sesion.fecha_hora"
+          required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Precio</label>
+        <input
+          type="number"
+          step="0.01"
+          class="form-control"
+          name="precio"
+          [(ngModel)]="sesion.precio"
+          required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Película</label>
+        <select
+            class="form-control"
+            name="id_pelicula"
+            [(ngModel)]="sesion.id_pelicula"
+            required>
+
+            <option [ngValue]="null">
+                Selecciona una película
+            </option>
+
+            @for (pelicula of peliculas; track pelicula.id_pelicula) {
+            <option [ngValue]="pelicula.id_pelicula">
+                {{ pelicula.titulo }}
+            </option>
+            }
+
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Sala</label>
+        <select
+            class="form-control"
+            name="id_sala"
+            [(ngModel)]="sesion.id_sala"
+            required>
+
+            <option [ngValue]="null">
+                Selecciona una sala
+            </option>
+
+            @for (sala of salas; track sala.id_sala) {
+                <option [ngValue]="sala.id_sala">
+                    {{ sala.nombre }}
+                </option>
+            }
+
+        </select>
+      </div>
+
+      <div class="d-flex gap-2 mt-4">
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="guardando">
+
+          {{ guardando ? 'Guardando...' : 'Guardar sesión' }}
+        </button>
+
+        <a routerLink="/admin/sesiones" class="btn btn-secondary">
+          Cancelar
+        </a>
+      </div>
+
+    </form>
+  }
+
+</div>
