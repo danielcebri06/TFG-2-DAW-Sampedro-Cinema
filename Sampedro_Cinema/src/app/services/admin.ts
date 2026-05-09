@@ -36,4 +36,29 @@ export class Admin {
   eliminarPelicula(id:number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/pelicula.php?id_pelicula=${id}`);
   }
+
+  // LISTA TODAS LAS SESIONES
+  listarSesiones(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/sesion.php`);
+  }
+
+  // OBTIENE UNA SESIÓN POR SU ID
+  obtenerSesion(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/sesion.php?id_sesion=${id}`);
+  }
+
+  // CREA UNA NUEVA SESIÓN
+  crearSesion(sesion: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/sesion.php`, sesion);
+  }
+
+  // MODIFICA UNA SESIÓN EXISTENTE
+  modificarSesion(id: number, sesion: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/sesion.php?id_sesion=${id}`, sesion);
+  }
+
+  // ELIMINA UNA SESIÓN
+  eliminarSesion(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/sesion.php?id_sesion=${id}`);
+  }
 }
