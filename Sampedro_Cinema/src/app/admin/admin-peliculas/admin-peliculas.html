@@ -6,9 +6,9 @@
       <p>Listado de películas registradas en la base de datos.</p>
     </div>
 
-    <button class="btn btn-success" disabled>
+    <a class="btn btn-success" routerLink="/admin/peliculas/nueva">
       Nueva película
-    </button>
+    </a>
   </div>
 
   @if (cargando) {
@@ -45,8 +45,16 @@
             <td>{{ pelicula.clasificacion || pelicula.id_clasificacion }}</td>
             <td>{{ pelicula.fecha_estreno }}</td>
             <td>
-              <button class="btn btn-sm btn-warning me-2" disabled>Editar</button>
-              <button class="btn btn-sm btn-danger" disabled>Eliminar</button>
+              <a 
+                class="btn btn-sm btn-warning me-2"
+                [routerLink]="['/admin/peliculas/editar', pelicula.id_pelicula]">
+                Editar
+              </a>
+              <button 
+                class="btn btn-sm btn-danger" 
+                (click)="eliminarPelicula(pelicula.id_pelicula)">
+                Eliminar
+              </button>
             </td>
           </tr>
         }
@@ -61,3 +69,5 @@
   }
 
 </div>
+
+
