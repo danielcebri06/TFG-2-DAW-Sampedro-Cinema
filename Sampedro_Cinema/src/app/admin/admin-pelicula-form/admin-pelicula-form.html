@@ -1,0 +1,107 @@
+<div class="container mt-4">
+
+  <h1>{{ modoEditar ? 'Editar película' : 'Nueva película' }}</h1>
+  <p>
+    {{ modoEditar ? 'Formulario para modificar una película existente.' : 'Formulario para registrar una película en la base de datos.' }}
+  </p>
+
+  @if (cargando) {
+    <div class="alert alert-info">
+      Cargando datos de la película...
+    </div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+  }
+
+  @if (mensaje) {
+    <div class="alert alert-success">
+      {{ mensaje }}
+    </div>
+  }
+
+  @if (!cargando) {
+    <form class="mt-4" (ngSubmit)="guardarPelicula()">
+
+      <div class="mb-3">
+        <label class="form-label">Título</label>
+        <input
+          type="text"
+          class="form-control"
+          name="titulo"
+          [(ngModel)]="pelicula.titulo"
+          required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Sinopsis</label>
+        <textarea
+          class="form-control"
+          rows="4"
+          name="sinopsis"
+          [(ngModel)]="pelicula.sinopsis"
+          required>
+        </textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Duración en minutos</label>
+        <input
+          type="number"
+          class="form-control"
+          name="duracion_minutos"
+          [(ngModel)]="pelicula.duracion_minutos"
+          required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Fecha de estreno</label>
+        <input
+          type="date"
+          class="form-control"
+          name="fecha_estreno"
+          [(ngModel)]="pelicula.fecha_estreno"
+          required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">URL de imagen / cartel</label>
+        <input
+          type="text"
+          class="form-control"
+          name="imagen"
+          [(ngModel)]="pelicula.imagen">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">ID clasificación</label>
+        <input
+          type="number"
+          class="form-control"
+          name="id_clasificacion"
+          [(ngModel)]="pelicula.id_clasificacion"
+          required>
+      </div>
+
+      <div class="d-flex gap-2 mt-4">
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="guardando">
+
+          {{ guardando ? 'Guardando...' : 'Guardar película' }}
+        </button>
+
+        <a routerLink="/admin/peliculas" class="btn btn-secondary">
+          Cancelar
+        </a>
+      </div>
+
+    </form>
+  }
+
+</div>
+
