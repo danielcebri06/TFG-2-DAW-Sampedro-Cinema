@@ -7,6 +7,7 @@ import { AdminDashboard } from './admin/admin-dashboard/admin-dashboard';
 import { AdminPeliculas } from './admin/admin-peliculas/admin-peliculas';
 import { AdminSesiones } from './admin/admin-sesiones/admin-sesiones';
 import { AdminSalas } from './admin/admin-salas/admin-salas';
+import { AdminPeliculaForm } from './admin/admin-pelicula-form/admin-pelicula-form';
 
 const routes: Routes = [
   { path: '', component: CarteleraComponent },
@@ -16,6 +17,8 @@ const routes: Routes = [
 
   { path: 'admin', component: AdminDashboard },
   { path: 'admin/peliculas', component: AdminPeliculas },
+  { path: 'admin/peliculas/nueva', component: AdminPeliculaForm },
+  { path: 'admin/peliculas/editar/:id', component: AdminPeliculaForm },
   { path: 'admin/sesiones', component: AdminSesiones },
   { path: 'admin/salas', component: AdminSalas },
 
