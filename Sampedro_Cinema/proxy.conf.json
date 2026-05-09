@@ -8,9 +8,19 @@
     },
     "logLevel": "debug"
   },
+    "/admin-api": {
+    "target": "http://localhost:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/admin-api": "/CineSampedro/public/api"
+    },
+    "logLevel": "debug"
+  },
   "/IMAGENES": {
     "target": "http://localhost:8000",
     "secure": false,
     "changeOrigin": true
   }
 }
+
