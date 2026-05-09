@@ -1,1 +1,72 @@
-<p>admin-sesiones works!</p>
+<div class="container mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h1>Gestión de sesiones</h1>
+      <p>Listado de sesiones registradas en la base de datos.</p>
+    </div>
+
+    <a class="btn btn-success" routerLink="/admin/sesiones/nueva">
+      Nueva sesión
+    </a>
+  </div>
+
+  @if (cargando) {
+    <div class="alert alert-info">
+      Cargando sesiones...
+    </div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+  }
+
+  @if (!cargando && sesiones.length > 0) {
+    <table class="table table-striped table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Fecha y hora</th>
+          <th>Precio</th>
+          <th>ID película</th>
+          <th>ID sala</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (sesion of sesiones; track sesion.id_sesion) {
+          <tr>
+            <td>{{ sesion.id_sesion }}</td>
+            <td>{{ sesion.fecha_hora }}</td>
+            <td>{{ sesion.precio }} €</td>
+            <td>{{ sesion.id_pelicula }}</td>
+            <td>{{ sesion.id_sala }}</td>
+            <td>
+              <a
+                class="btn btn-sm btn-warning me-2"
+                [routerLink]="['/admin/sesiones/editar', sesion.id_sesion]">
+                Editar
+              </a>
+
+              <button
+                class="btn btn-sm btn-danger"
+                (click)="eliminarSesion(sesion.id_sesion)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (!cargando && sesiones.length === 0) {
+    <div class="alert alert-warning">
+      No hay sesiones registradas.
+    </div>
+  }
+
+</div>
