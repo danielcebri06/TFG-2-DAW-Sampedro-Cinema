@@ -8,11 +8,32 @@ import { Observable } from 'rxjs';
 })
 
 export class Admin {
-  private apiUrl = '/api';
+  private apiUrl = '/admin-api';
 
   constructor(private http: HttpClient){}
 
+  //LISTA TODAS LAS PELICULAS
   listarPeliculas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/listar_peliculas.php`);
+    return this.http.get<any[]>(`${this.apiUrl}/pelicula.php`);
+  }
+
+  //OBTIENE UNA PELICULA POR SU ID
+  obtenerPelicula(id: number): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/pelicula.php?id_pelicula=${id}`);
+  }
+
+  //CREA UNA NUEVA PELICULA
+  crearPelicula(pelicula: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/pelicula.php`, pelicula);
+  }
+
+  //MODIFICA UNA PELICULA EXISTENTE
+  modificarPelicula(id: number, pelicula: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/pelicula.php?id_pelicula=${id}`, pelicula);
+  }
+
+  //ELIMINA UNA PELICULA
+  eliminarPelicula(id:number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/pelicula.php?id_pelicula=${id}`);
   }
 }
