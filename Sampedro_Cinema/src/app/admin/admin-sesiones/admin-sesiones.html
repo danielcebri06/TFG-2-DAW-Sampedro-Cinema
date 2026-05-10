@@ -46,8 +46,8 @@
           <th>ID</th>
           <th>Fecha y hora</th>
           <th>Precio</th>
-          <th>ID película</th>
-          <th>ID sala</th>
+          <th>Película</th>
+          <th>Sala</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -58,8 +58,8 @@
             <td>{{ sesion.id_sesion }}</td>
             <td>{{ sesion.fecha_hora }}</td>
             <td>{{ sesion.precio }} €</td>
-            <td>{{ sesion.id_pelicula }}</td>
-            <td>{{ sesion.id_sala }}</td>
+            <td>{{ obtenerTituloPelicula(sesion.id_pelicula) }}</td>
+            <td>{{ obtenerNombreSala(sesion.id_sala) }}</td>
             <td>
               <a
                 class="btn btn-sm btn-warning me-2"
