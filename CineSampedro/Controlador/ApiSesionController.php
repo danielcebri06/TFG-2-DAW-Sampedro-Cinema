@@ -5,15 +5,21 @@ namespace App\Controlador;
 use App\Modelo\Conexion\BD;
 use App\Modelo\DAO\SesionDAO;
 use App\Modelo\Entidades\Sesion;
+use App\Modelo\DAO\PeliculaDAO;
+use App\Modelo\DAO\SalaDAO;
 use PDOException;
 
 class ApiSesionController {
 
     private SesionDAO $sesionDAO;
+    private PeliculaDAO $peliculaDAO;
+    private SalaDAO $salaDAO;
 
     public function __construct() {
         $bd = BD::getConexion();
         $this->sesionDAO = new SesionDAO($bd);
+        $this->peliculaDAO = new PeliculaDAO($bd);
+        $this->salaDAO = new SalaDAO($bd);
     }
     
     private function enviarRespuesta(array $datos, int $codigo = 200): void {
@@ -41,6 +47,144 @@ class ApiSesionController {
                 $datos['id_pelicula'],
                 $datos['id_sala']
         );
+    }
+
+    private function validarReglasSesion(array $datos, ?int $id_sesion = null): void {
+
+        // Validación: el precio de la sesión debe ser mayor de 0.
+        if ((float)$datos['precio'] <= 0) {
+            $this->enviarRespuesta([
+                'mensaje' => 'El precio de la sesión debe ser mayor que 0'
+            ], 400);
+        }
+
+        // Validación: debe seleccionarse una película válida.
+        if ((int)$datos['id_pelicula'] <= 0) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Debes seleccionar una película válida'
+            ], 400);
+        }
+
+        // Validación: debe seleccionarse una sala válida.
+        if ((int)$datos['id_sala'] <= 0) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Debes seleccionar una sala válida'
+            ], 400);
+        }
+
+        // Validación: la película seleccionada debe existir en la base de datos.
+        $pelicula = $this->peliculaDAO->recuperaPorId((int)$datos['id_pelicula']);
+
+        if ($pelicula === null) {
+            $this->enviarRespuesta([
+                'mensaje' => 'La película seleccionada no existe'
+            ], 400);
+        }
+
+        // Validación: la sala seleccionada debe existir en la base de datos.
+        $sala = $this->salaDAO->recuperarPorId((int)$datos['id_sala']);
+
+        if ($sala === null) {
+            $this->enviarRespuesta([
+                'mensaje' => 'La sala seleccionada no existe'
+            ], 400);
+        }
+
+        /* Validación: no se permite duplicar una misma sesión
+        con la misma película, sala y fecha/hora.*/
+        $sesionDuplicada = $this->sesionDAO->recuperarSesionDuplicada(
+            $datos['fecha_hora'],
+            (int)$datos['id_pelicula'],
+            (int)$datos['id_sala']
+        );
+
+        if (
+            $sesionDuplicada !== null &&
+            (
+                $id_sesion === null ||
+                $sesionDuplicada->getId_sesion() !== $id_sesion
+            )
+        ) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Ya existe una sesión para esa película, sala y fecha/hora'
+            ], 400);
+        }
+
+        /* Validación: una sala no puede tener dos sesiones
+        empezando exactamente en la misma fecha y hora.*/
+        $sesionMismaSalaYHora = $this->sesionDAO->recuperarSesionPorSalaYFecha(
+            $datos['fecha_hora'],
+            (int)$datos['id_sala']
+        );
+
+        if (
+            $sesionMismaSalaYHora !== null &&
+            (
+                $id_sesion === null ||
+                $sesionMismaSalaYHora->getId_sesion() !== $id_sesion
+            )
+        ) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Ya existe una sesión en esa sala a esa fecha y hora'
+            ], 400);
+        }
+
+        /* Validación: no se permite que una sesión se solape con otra en la misma sala. 
+        Para calcularlo se tiene en cuenta:
+            - hora de inicio de la nueva sesión
+            - duración de la película
+            - margen de limpieza de 20 minutos
+            - sesiones existentes en esa misma sala.*/
+
+        $margenLimpieza = 20;
+        $inicioNuevaSesion = null;
+
+        try {
+            $inicioNuevaSesion = new \DateTime($datos['fecha_hora']);
+        } catch (\Exception $e) {
+            $this->enviarRespuesta([
+                'mensaje' => 'La fecha y hora de la sesión no es válida'
+            ], 400);
+        }
+
+        $duracionNuevaSesion = $pelicula->getDuracion_minutos() + $margenLimpieza;
+
+        $finNuevaSesion = clone $inicioNuevaSesion;
+        $finNuevaSesion->modify('+' . $duracionNuevaSesion . ' minutes');
+
+        $sesionesMismaSala = $this->sesionDAO->recuperarSesionesPorSalaConDuracion(
+            (int)$datos['id_sala']
+        );
+
+        foreach ($sesionesMismaSala as $sesionExistente) {
+
+            // Si estamos editando una sesión, no se compara consigo misma.
+            if (
+                $id_sesion !== null &&
+                (int)$sesionExistente['id_sesion'] === $id_sesion
+            ) {
+                continue;
+            }
+
+            $inicioSesionExistente = new \DateTime($sesionExistente['fecha_hora']);
+
+            $duracionSesionExistente = 
+                (int)$sesionExistente['duracion_minutos'] + $margenLimpieza;
+
+            $finSesionExistente = clone $inicioSesionExistente;
+            $finSesionExistente->modify('+' . $duracionSesionExistente . ' minutes');
+
+            // Hay solapamiento si la nueva sesión empieza antes de que termine
+            // la sesión existente y, además, termina después de que empiece la existente.
+            if (
+                $inicioNuevaSesion < $finSesionExistente &&
+                $finNuevaSesion > $inicioSesionExistente
+            ) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'La sala ya tiene una sesión que se solapa con ese horario'
+                ], 400);
+            }
+        }
     }
     
     public function listar(): void {
@@ -101,6 +245,8 @@ class ApiSesionController {
                     'mensaje' => 'Datos de sesión incompletos o inválidos'
                 ],400);                
             }
+
+            $this->validarReglasSesion($datos);
             
             $sesion = new Sesion(
                     null, 
@@ -120,7 +266,7 @@ class ApiSesionController {
         } catch (PDOException $ex) {
             $this->enviarRespuesta( [
                 'mensaje' => 'Error al crear la sesión',
-                'erro' => $ex->getMessage()
+                'error' => $ex->getMessage()
             ], 500);
         }
     }
@@ -131,7 +277,7 @@ class ApiSesionController {
             
             if (!$sesionExistente) {
                 $this->enviarRespuesta([
-                    'mensaje' => 'Sesión no encotrada'
+                    'mensaje' => 'Sesión no encontrada'
                 ], 404);
             }
             
@@ -142,6 +288,8 @@ class ApiSesionController {
                     'mensaje' => 'Datos de sesión incompletos o inválidos'
                 ], 400);
             }
+
+            $this->validarReglasSesion($datos, $id_sesion);
 
             $sesion = new Sesion(
                 $id_sesion,
