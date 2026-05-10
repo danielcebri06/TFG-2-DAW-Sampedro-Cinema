@@ -1,4 +1,23 @@
 <div class="container mt-4">
+  <!-- Migas de pan para indicar si el administrador está creando o editando una sala -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/admin">Admin</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a routerLink="/admin/salas">Salas</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        {{ modoEditar ? 'Editar sala' : 'Nueva sala' }}
+      </li>
+    </ol>
+  </nav>
+
+  <!-- Botón para volver al panel principal de administración -->
+  <a routerLink="/admin" class="btn btn-outline-secondary mb-3">
+    ← Volver al panel Admin
+  </a>
 
   <h1>{{ modoEditar ? 'Editar sala' : 'Nueva sala' }}</h1>
   <p>
