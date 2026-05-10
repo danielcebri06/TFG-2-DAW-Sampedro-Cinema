@@ -23,6 +23,18 @@ class SesionDAO {
         
         return $resultado->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function contarPorSala(int $id_sala): int {
+        $sql = "SELECT COUNT(*) FROM sesiones WHERE id_sala = :id_sala";
+
+        $resultado = $this->bd->prepare($sql);
+
+        $resultado->execute([
+            ':id_sala' => $id_sala
+        ]);
+
+        return (int) $resultado->fetchColumn();
+    }
     
     public function crear(Sesion $sesion): int{
         $sql = "INSERT INTO sesiones (fecha_hora, precio, id_pelicula, id_sala)"
