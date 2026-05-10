@@ -83,9 +83,11 @@ export class AdminPeliculaForm implements OnInit {
           this.guardando = false;
           this.router.navigate(['/admin/peliculas']);
         },
-        error: () => {
-          this.error = 'No se pudo modificar la película.';
+        error: (error) => {
+          console.error('Error al modificar película:', error);
+          this.error = error.error?.mensaje || 'No se pudo modificar la película.';
           this.guardando = false;
+          this.cd.detectChanges();
         }
       });
     } else {
@@ -95,9 +97,11 @@ export class AdminPeliculaForm implements OnInit {
           this.guardando = false;
           this.router.navigate(['/admin/peliculas']);
         },
-        error: () => {
-          this.error = 'No se pudo crear la película.';
+        error: (error) => {
+          console.error('Error al crear película:', error);
+          this.error = error.error?.mensaje || 'No se pudo crear la película.';
           this.guardando = false;
+          this.cd.detectChanges();
         }
       });
     }
