@@ -19,10 +19,7 @@ export class AdminSesionForm implements OnInit {
 
   peliculas: any[] = [];
 
-  salas: any[] = [
-    { id_sala: 1, nombre: 'Sala 1' },
-    { id_sala: 2, nombre: 'Sala 2' }
-  ];
+  salas: any[] = [];
 
   modoEditar = false;
   idSesion: number | null = null;
@@ -41,6 +38,7 @@ export class AdminSesionForm implements OnInit {
 
   ngOnInit(): void {
     this.cargarPeliculas();
+    this.cargarSalas();
 
     const id = this.route.snapshot.paramMap.get('id');
 
@@ -126,6 +124,20 @@ export class AdminSesionForm implements OnInit {
       error: (error) => {
         console.error('Error al cargar películas para el desplegable:', error);
         this.error = 'No se pudieron cargar las películas.';
+        this.cd.detectChanges();
+      }
+    });
+  }
+
+  cargarSalas(): void {
+    this.adminService.listarSalas().subscribe({
+      next: (datos) => {
+        this.salas = datos;
+        this.cd.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error al cargar salas para el desplegable:', error);
+        this.error = 'No se pudieron cargar las salas.';
         this.cd.detectChanges();
       }
     });
