@@ -1,0 +1,66 @@
+<div class="container mt-4">
+
+  <h1>{{ modoEditar ? 'Editar sala' : 'Nueva sala' }}</h1>
+  <p>
+    {{ modoEditar ? 'Formulario para modificar una sala existente.' : 'Formulario para registrar una sala en la base de datos.' }}
+  </p>
+
+  @if (cargando) {
+    <div class="alert alert-info">
+      Cargando datos de la sala...
+    </div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+  }
+
+  @if (mensaje) {
+    <div class="alert alert-success">
+      {{ mensaje }}
+    </div>
+  }
+
+  @if (!cargando) {
+    <form class="mt-4" (ngSubmit)="guardarSala()">
+
+      <div class="mb-3">
+        <label class="form-label">Número de sala</label>
+        <input
+          type="number"
+          class="form-control"
+          name="numero"
+          [(ngModel)]="sala.numero"
+          required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Capacidad</label>
+        <input
+          type="number"
+          class="form-control"
+          name="capacidad"
+          [(ngModel)]="sala.capacidad"
+          required>
+      </div>
+
+      <div class="d-flex gap-2 mt-4">
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="guardando">
+
+          {{ guardando ? 'Guardando...' : 'Guardar sala' }}
+        </button>
+
+        <a routerLink="/admin/salas" class="btn btn-secondary">
+          Cancelar
+        </a>
+      </div>
+
+    </form>
+  }
+
+</div>
