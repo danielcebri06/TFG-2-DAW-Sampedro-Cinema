@@ -9,6 +9,7 @@ import { AdminSesiones } from './admin/admin-sesiones/admin-sesiones';
 import { AdminSalas } from './admin/admin-salas/admin-salas';
 import { AdminPeliculaForm } from './admin/admin-pelicula-form/admin-pelicula-form';
 import { AdminSesionForm } from './admin/admin-sesion-form/admin-sesion-form';
+import { AdminSalaForm } from './admin/admin-sala-form/admin-sala-form';
 
 const routes: Routes = [
   { path: '', component: CarteleraComponent },
@@ -24,6 +25,8 @@ const routes: Routes = [
   { path: 'admin/sesiones/nueva', component: AdminSesionForm },
   { path: 'admin/sesiones/editar/:id', component: AdminSesionForm },
   { path: 'admin/salas', component: AdminSalas },
+  { path: 'admin/salas/nueva', component: AdminSalaForm },
+  { path: 'admin/salas/editar/:id', component: AdminSalaForm },
 
   { path: '**', redirectTo: '' }
 ];
