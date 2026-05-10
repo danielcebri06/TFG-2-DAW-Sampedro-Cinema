@@ -93,7 +93,7 @@ export class AdminSesionForm implements OnInit {
         },
         error: (error) => {
           console.error('Error al modificar sesión:', error);
-          this.error = 'No se pudo modificar la sesión.';
+          this.error = this.error = error.error?.mensaje || 'No se pudo modificar la sesión.';
           this.guardando = false;
           this.cd.detectChanges();
         }
@@ -107,7 +107,7 @@ export class AdminSesionForm implements OnInit {
         },
         error: (error) => {
           console.error('Error al crear sesión:', error);
-          this.error = 'No se pudo crear la sesión.';
+          this.error = this.error = error.error?.mensaje || 'No se pudo crear la sesión.';
           this.guardando = false;
           this.cd.detectChanges();
         }
