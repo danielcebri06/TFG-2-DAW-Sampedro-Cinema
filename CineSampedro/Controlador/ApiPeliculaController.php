@@ -43,13 +43,79 @@ class ApiPeliculaController {
     }
     
     private function validarDatosPelicula(array $datos): bool {
-         $duracion = $datos['duracion_minutos'] ?? $datos['duracion_min'] ?? null;
+        $duracion = $datos['duracion_minutos'] ?? $datos['duracion_min'] ?? null;
 
-        return !empty($datos['titulo']) &&
-               !empty($datos['sinopsis']) &&
-             $duracion !== null &&
-               !empty($datos['imagen']) &&
-               isset($datos['id_clasificacion']);
+        /* Validación inicial: comprueba que los campos necesarios han llegado en el JSON.*/
+        return isset(
+            $datos['titulo'],
+            $datos['sinopsis'],
+            $datos['imagen'],
+            $datos['fecha_estreno'],
+            $datos['id_clasificacion']
+        ) && $duracion !== null;
+    }
+
+    private function validarReglasPelicula(array $datos): void {
+        $duracion = (int) ($datos['duracion_minutos'] ?? $datos['duracion_min']);
+
+        /*Validación: el título es obligatorio. Evita registrar películas sin nombre o con 
+        espacios en blanco.*/
+        if (trim($datos['titulo']) === '') {
+            $this->enviarRespuesta([
+                'mensaje' => 'El título de la película es obligatorio'
+            ], 400);
+        }
+
+        /*
+        * Validación: la sinopsis es obligatoria. La ficha de una película debe tener 
+        una descripción mínima.*/
+        if (trim($datos['sinopsis']) === '') {
+            $this->enviarRespuesta([
+                'mensaje' => 'La sinopsis de la película es obligatoria'
+            ], 400);
+        }
+
+        /*Validación: la duración debe ser mayor que 0. No tendría sentido guardar una película 
+        con duración 0 o negativa.*/
+        if ($duracion <= 0) {
+            $this->enviarRespuesta([
+                'mensaje' => 'La duración de la película debe ser mayor que 0'
+            ], 400);
+        }
+
+        /*Validación: la imagen o ruta del cartel es obligatoria. La cartelera necesita 
+        una imagen para mostrar la película correctamente.*/
+        if (trim($datos['imagen']) === '') {
+            $this->enviarRespuesta([
+                'mensaje' => 'La imagen de la película es obligatoria'
+            ], 400);
+        }
+
+        /*Validación: la fecha de estreno es obligatoria. Se necesita para mostrar correctamente
+        la película en cartelera o próximos estrenos.*/
+        if (trim($datos['fecha_estreno']) === '') {
+            $this->enviarRespuesta([
+                'mensaje' => 'La fecha de estreno es obligatoria'
+            ], 400);
+        }
+
+        /*Validación: debe seleccionarse una clasificación válida. El id de clasificación 
+        debe ser mayor que 0.*/
+        if ((int)$datos['id_clasificacion'] <= 0) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Debes seleccionar una clasificación válida'
+            ], 400);
+        }
+
+        /*Validación: la clasificación debe existir en la base de datos.
+        No basta con recibir un id; ese id debe corresponder a una clasificación real.*/
+        $nombreClasificacion = $this->obtenerNombreClasificacion((int)$datos['id_clasificacion']);
+
+        if ($nombreClasificacion === null) {
+            $this->enviarRespuesta([
+                'mensaje' => 'La clasificación seleccionada no existe'
+            ], 400);
+        }
     }
 
     private function obtenerNombreClasificacion(int $idClasificacion): ?string {
@@ -124,6 +190,8 @@ class ApiPeliculaController {
                 $this->enviarRespuesta(['mensaje' => 'Datos de película incompletos o inválidos'], 400);
             }
 
+            $this->validarReglasPelicula($datos);
+
             $duracion = (int) ($datos['duracion_minutos'] ?? $datos['duracion_min']);
             $fechaEstreno = $datos['fecha_estreno'] ?? null;
             
@@ -164,6 +232,8 @@ class ApiPeliculaController {
             if (!$datos || !$this->validarDatosPelicula($datos)) {
                 $this->enviarRespuesta(['mensaje' => 'Datos de película incompletos o inválidos'], 400);
             }
+
+            $this->validarReglasPelicula($datos);
 
             $duracion = (int) ($datos['duracion_minutos'] ?? $datos['duracion_min']);
             $fechaEstreno = $datos['fecha_estreno'] ?? null;
