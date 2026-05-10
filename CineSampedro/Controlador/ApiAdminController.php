@@ -9,6 +9,7 @@ use App\Modelo\DAO\SalaDAO;
 use App\Modelo\DAO\ReservaDAO;
 use App\Modelo\DAO\PagoDAO;
 use App\Modelo\DAO\UsuarioDAO;
+use App\Modelo\Entidades\Sala;
 use PDOException;
 
 class ApiAdminController {
@@ -35,6 +36,19 @@ class ApiAdminController {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($datos, JSON_UNESCAPED_UNICODE);
         exit;
+    }
+
+    private function leerJson(): array {
+        $json = file_get_contents('php://input');
+        $datos = json_decode($json, true);
+
+        if (!is_array($datos)) {
+            $this->enviarRespuesta([
+                'mensaje' => 'JSON no válido'
+            ], 400);
+        }
+
+        return $datos;
     }
 
     public function resumen(): void {
@@ -154,6 +168,140 @@ class ApiAdminController {
         } catch (PDOException $e) {
             $this->enviarRespuesta([
                 'mensaje' => 'Error al recuperar las salas',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function obtenerSala(int $id_sala): void {
+        try {
+            $sala = $this->salaDAO->recuperarPorId($id_sala);
+
+            if ($sala === null) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'Sala no encontrada'
+                ], 404);
+            }
+
+            $this->enviarRespuesta([
+                'id_sala' => $sala->getId_sala(),
+                'numero' => $sala->getNumero(),
+                'capacidad' => $sala->getCapacidad()
+            ]);
+
+        } catch (PDOException $e) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Error al recuperar la sala',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function crearSala(): void {
+        try {
+            $datos = $this->leerJson();
+
+            if (
+                !isset($datos['numero']) ||
+                !isset($datos['capacidad'])
+            ) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'Faltan datos obligatorios'
+                ], 400);
+            }
+
+            if ((int)$datos['numero'] <= 0 || (int)$datos['capacidad'] <= 0) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'El número de sala y la capacidad deben ser mayores que 0'
+                ], 400);
+            }
+
+            $sala = new Sala(
+                null,
+                (int)$datos['numero'],
+                (int)$datos['capacidad']
+            );
+
+            $this->salaDAO->crear($sala);
+
+            $this->enviarRespuesta([
+                'mensaje' => 'Sala creada correctamente'
+            ], 201);
+
+        } catch (PDOException $e) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Error al crear la sala',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function modificarSala(int $id_sala): void {
+        try {
+            $salaExistente = $this->salaDAO->recuperarPorId($id_sala);
+
+            if ($salaExistente === null) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'Sala no encontrada'
+                ], 404);
+            }
+
+            $datos = $this->leerJson();
+
+            if (
+                !isset($datos['numero']) ||
+                !isset($datos['capacidad'])
+            ) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'Faltan datos obligatorios'
+                ], 400);
+            }
+
+            if ((int)$datos['numero'] <= 0 || (int)$datos['capacidad'] <= 0) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'El número de sala y la capacidad deben ser mayores que 0'
+                ], 400);
+            }
+
+            $sala = new Sala(
+                $id_sala,
+                (int)$datos['numero'],
+                (int)$datos['capacidad']
+            );
+
+            $this->salaDAO->modificar($sala);
+
+            $this->enviarRespuesta([
+                'mensaje' => 'Sala modificada correctamente'
+            ]);
+
+        } catch (PDOException $e) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Error al modificar la sala',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function eliminarSala(int $id_sala): void {
+        try {
+            $salaExistente = $this->salaDAO->recuperarPorId($id_sala);
+
+            if ($salaExistente === null) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'Sala no encontrada'
+                ], 404);
+            }
+
+            $this->salaDAO->eliminar($id_sala);
+
+            $this->enviarRespuesta([
+                'mensaje' => 'Sala eliminada correctamente'
+            ]);
+
+        } catch (PDOException $e) {
+            $this->enviarRespuesta([
+                'mensaje' => 'Error al eliminar la sala. Puede que tenga sesiones asociadas.',
                 'error' => $e->getMessage()
             ], 500);
         }
