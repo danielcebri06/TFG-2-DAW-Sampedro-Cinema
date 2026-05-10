@@ -54,7 +54,7 @@ export class AdminSalas implements OnInit {
       },
       error: (error) => {
         console.error('Error al eliminar sala:', error);
-        this.error = 'No se pudo eliminar la sala. Puede que tenga sesiones asociadas.';
+        this.error = error.error?.mensaje || 'No se pudo eliminar la sala. Puede que tenga sesiones asociadas.';
         this.cd.detectChanges();
       }
     });
