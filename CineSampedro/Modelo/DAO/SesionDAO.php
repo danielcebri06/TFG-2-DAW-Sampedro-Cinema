@@ -35,6 +35,99 @@ class SesionDAO {
 
         return (int) $resultado->fetchColumn();
     }
+
+    /* Consulta si ya existe una sesión con la misma película, 
+    sala y fecha/hora. Se usa para evitar sesiones duplicadas.*/
+    public function recuperarSesionDuplicada(
+        string $fecha_hora,
+        int $id_pelicula,
+        int $id_sala
+    ): ?Sesion {
+        $sql = "SELECT * FROM sesiones 
+                WHERE fecha_hora = :fecha_hora
+                AND id_pelicula = :id_pelicula
+                AND id_sala = :id_sala";
+
+        $resultado = $this->bd->prepare($sql);
+
+        $resultado->execute([
+            ':fecha_hora' => $fecha_hora,
+            ':id_pelicula' => $id_pelicula,
+            ':id_sala' => $id_sala
+        ]);
+
+        $fila = $resultado->fetch(PDO::FETCH_ASSOC);
+
+        if (!$fila) {
+            return null;
+        }
+
+        return new Sesion(
+            $fila['id_sesion'],
+            $fila['fecha_hora'],
+            $fila['precio'],
+            $fila['id_pelicula'],
+            $fila['id_sala']
+        );
+    }
+
+    /* Consulta si ya existe alguna sesión en una sala concreta empezando en la misma 
+    fecha y hora.
+    Se usa para evitar que una sala tenga dos sesiones a la vez.*/
+    public function recuperarSesionPorSalaYFecha(
+        string $fecha_hora,
+        int $id_sala
+    ): ?Sesion {
+        $sql = "SELECT * FROM sesiones 
+                WHERE fecha_hora = :fecha_hora
+                AND id_sala = :id_sala";
+
+        $resultado = $this->bd->prepare($sql);
+
+        $resultado->execute([
+            ':fecha_hora' => $fecha_hora,
+            ':id_sala' => $id_sala
+        ]);
+
+        $fila = $resultado->fetch(PDO::FETCH_ASSOC);
+
+        if (!$fila) {
+            return null;
+        }
+
+        return new Sesion(
+            $fila['id_sesion'],
+            $fila['fecha_hora'],
+            $fila['precio'],
+            $fila['id_pelicula'],
+            $fila['id_sala']
+        );
+    }
+
+    /* Consulta todas las sesiones de una sala junto con la duración de su película.
+    Se usa para comprobar si una nueva sesión se solapa con sesiones ya existentes.*/
+    public function recuperarSesionesPorSalaConDuracion(int $id_sala): array {
+        $sql = "SELECT 
+                    s.id_sesion,
+                    s.fecha_hora,
+                    s.precio,
+                    s.id_pelicula,
+                    s.id_sala,
+                    p.titulo,
+                    p.duracion_minutos
+                FROM sesiones s
+                INNER JOIN peliculas p ON s.id_pelicula = p.id_pelicula
+                WHERE s.id_sala = :id_sala
+                ORDER BY s.fecha_hora";
+
+        $resultado = $this->bd->prepare($sql);
+
+        $resultado->execute([
+            ':id_sala' => $id_sala
+        ]);
+
+        return $resultado->fetchAll(PDO::FETCH_ASSOC);
+    }
     
     public function crear(Sesion $sesion): int{
         $sql = "INSERT INTO sesiones (fecha_hora, precio, id_pelicula, id_sala)"
