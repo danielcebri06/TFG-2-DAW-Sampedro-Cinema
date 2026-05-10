@@ -216,6 +216,14 @@ class ApiAdminController {
                 ], 400);
             }
 
+            $salaExistente = $this->salaDAO->recuperarPorNumero((int)$datos['numero']);
+
+            if ($salaExistente !== null) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'Ya existe una sala con ese número'
+                ], 400);
+            }
+
             $sala = new Sala(
                 null,
                 (int)$datos['numero'],
@@ -263,6 +271,17 @@ class ApiAdminController {
                 ], 400);
             }
 
+            $salaConEseNumero = $this->salaDAO->recuperarPorNumero((int)$datos['numero']);
+
+            if (
+                $salaConEseNumero !== null &&
+                $salaConEseNumero->getId_sala() !== $id_sala
+            ) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'Ya existe otra sala con ese número'
+                ], 400);
+            }
+
             $sala = new Sala(
                 $id_sala,
                 (int)$datos['numero'],
@@ -291,6 +310,14 @@ class ApiAdminController {
                 $this->enviarRespuesta([
                     'mensaje' => 'Sala no encontrada'
                 ], 404);
+            }
+
+            $sesionesAsociadas = $this->sesionDAO->contarPorSala($id_sala);
+
+            if ($sesionesAsociadas > 0) {
+                $this->enviarRespuesta([
+                    'mensaje' => 'No se puede eliminar la sala porque tiene sesiones asociadas'
+                ], 400);
             }
 
             $this->salaDAO->eliminar($id_sala);
