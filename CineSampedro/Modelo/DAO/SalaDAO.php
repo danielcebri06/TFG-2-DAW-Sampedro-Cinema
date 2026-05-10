@@ -73,6 +73,28 @@ class SalaDAO {
                 $fila['capacidad']
         );
     }
+
+    public function recuperarPorNumero(int $numero): ?Sala {
+        $sql = "SELECT * FROM salas WHERE numero = :numero";
+
+        $resultado = $this->bd->prepare($sql);
+
+        $resultado->execute([
+            ':numero' => $numero
+        ]);
+
+        $fila = $resultado->fetch(PDO::FETCH_ASSOC);
+
+        if (!$fila) {
+            return null;
+        }
+
+        return new Sala(
+            $fila['id_sala'],
+            $fila['numero'],
+            $fila['capacidad']
+        );
+    }
     
     public function recuperarTodos (): array {
         $salas = [];
