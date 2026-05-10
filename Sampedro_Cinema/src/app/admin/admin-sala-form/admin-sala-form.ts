@@ -77,7 +77,7 @@ export class AdminSalaForm implements OnInit {
         },
         error: (error) => {
           console.error('Error al modificar sala:', error);
-          this.error = 'No se pudo modificar la sala.';
+          this.error = error.error?.mensaje || 'No se pudo modificar la sala.';
           this.guardando = false;
           this.cd.detectChanges();
         }
@@ -91,7 +91,7 @@ export class AdminSalaForm implements OnInit {
         },
         error: (error) => {
           console.error('Error al crear sala:', error);
-          this.error = 'No se pudo crear la sala.';
+          this.error = error.error?.mensaje || 'No se pudo crear la sala.';
           this.guardando = false;
           this.cd.detectChanges();
         }
