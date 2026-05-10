@@ -61,4 +61,29 @@ export class Admin {
   eliminarSesion(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/sesion.php?id_sesion=${id}`);
   }
+
+  // LISTA TODAS LAS SALAS
+  listarSalas(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin.php?accion=salas`);
+  }
+
+  // OBTIENE UNA SALA POR SU ID
+  obtenerSala(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/admin.php?accion=salas&id_sala=${id}`);
+  }
+
+  // CREA UNA NUEVA SALA
+  crearSala(sala: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/admin.php?accion=salas`, sala);
+  }
+
+  // MODIFICA UNA SALA EXISTENTE
+  modificarSala(id: number, sala: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/admin.php?accion=salas&id_sala=${id}`, sala);
+  }
+
+  // ELIMINA UNA SALA
+  eliminarSala(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/admin.php?accion=salas&id_sala=${id}`);
+  }
 }
