@@ -82,7 +82,7 @@
 
             @for (sala of salas; track sala.id_sala) {
                 <option [ngValue]="sala.id_sala">
-                    {{ sala.nombre }}
+                    Sala {{ sala.numero }} - {{ sala.capacidad }} asientos
                 </option>
             }
 
