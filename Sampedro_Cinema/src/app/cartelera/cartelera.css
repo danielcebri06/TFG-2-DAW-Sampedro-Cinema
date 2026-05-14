@@ -1,0 +1,64 @@
+/* --- ESTILOS GENERALES Y BORDES --- */
+.redondeado-suave {
+  border-radius: 20px !important;
+}
+
+.redondeado-extremo {
+  border-radius: 30px !important;
+}
+
+/* --- CARRUSEL --- */
+.img-carrusel {
+  height: 450px;
+  object-fit: cover;
+  object-position: top; /* Enfoca la parte superior de los carteles */
+}
+
+.degradado-texto {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  bottom: 15%; /* Sube un poco el texto */
+}
+
+/* --- TARJETAS DE PELÍCULAS --- */
+.tarjeta-peli {
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+/* Efecto al pasar el ratón: se levanta y proyecta sombra */
+.tarjeta-peli:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+}
+
+.contenedor-imagen {
+  height: 350px;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+}
+
+.img-cover {
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+/* Pequeño zoom a la imagen al pasar el ratón */
+.tarjeta-peli:hover .img-cover {
+  transform: scale(1.05);
+}
+
+/* --- BOTÓN ROJO PERSONALIZADO --- */
+.btn-red {
+  background: linear-gradient(135deg, #e50914, #b20710);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+  padding: 10px 20px;
+}
+
+.btn-red:hover {
+  background: linear-gradient(135deg, #b20710, #8a050c);
+  color: white;
+  transform: scale(1.02);
+}
